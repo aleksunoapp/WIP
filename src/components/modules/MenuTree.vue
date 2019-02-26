@@ -3,6 +3,7 @@
     ref="modal"
     :show="showMenuTreeModal"
     :width="900"
+    :full-height="true"
     effect="fade"
     @closeOnEscape="closeModal"
   >
@@ -33,20 +34,9 @@
     </div>
     <div
       slot="modal-body"
-      class="modal-body"
+      class="modal-body height-100"
     >
-      <div class="portlet light bordered height-mod">
-        <div
-          v-if="updateType !== 'sku' && selectedObject.name"
-          class="portlet-title"
-        >
-          <div class="caption">
-            <i class="fa fa-cog font-blue-madison" />
-            <span class="caption-subject font-blue-madison sbold uppercase">
-              {{ selectedObject.name }}
-            </span>
-          </div>
-        </div>
+      <div class="portlet light">
         <div class="portlet-body">
           <div
             v-show="errorMessage"
@@ -378,9 +368,8 @@ export default {
 }
 </script>
 <style scoped>
-.height-mod {
-  max-height: 500px;
-  overflow: auto;
+.portlet.light {
+  box-shadow: none;
 }
 .dd-handle {
   cursor: pointer;

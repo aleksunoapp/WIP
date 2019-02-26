@@ -108,6 +108,12 @@
                     </span>
                     <label :for="'item_checkbox_' + item.id">
                       {{ item.name }}
+                      <span
+                        v-if="showSku"
+                        class="grey"
+                      >
+                        {{ item.sku }}
+                      </span>
                     </label>
                   </div>
                 </li>
@@ -137,6 +143,14 @@ export default {
     previouslySelected: {
       type: Array,
       default: () => [],
+      required: false
+    },
+    /**
+     * @property {boolean} single - Displays item's SKU below the item
+     */
+    showSku: {
+      type: Boolean,
+      default: () => false,
       required: false
     }
   },
@@ -319,5 +333,8 @@ export default {
 .active {
   color: #2ea8e5;
   background: #fff;
+}
+.grey {
+  color: #5f5f5f;
 }
 </style>

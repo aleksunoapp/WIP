@@ -203,8 +203,18 @@
                   }"
                   aria-hidden="true"
                 />
-                {{ item.name }}
-                {{ item.category.parent_category !== 0 ? ` (${item.category_name})` : '' }}
+                <div>
+                  <div>
+                    {{ item.name }}
+                    {{ item.category.parent_category !== 0 ? ` (${item.category_name})` : '' }}
+                  </div>
+                  <div
+                    v-show="showSku"
+                    class="grey"
+                  >
+                    {{ `${item.sku}` }}
+                  </div>
+                </div>
               </div>
             </div>
           </li>
@@ -229,17 +239,25 @@ export default {
   name: 'MenuItemPicker',
   props: {
     /**
-		 * @property {array} previouslySelected - An array of SKU strings of previously selected items
-		 */
+     * @property {array} previouslySelected - An array of SKU strings of previously selected items
+     */
     previouslySelected: {
       type: Array,
       default: () => [],
       required: false
     },
     /**
-		 * @property {boolean} single - Limits selection to one item only
-		 */
+     * @property {boolean} single - Limits selection to one item only
+     */
     single: {
+      type: Boolean,
+      default: () => false,
+      required: false
+    },
+    /**
+     * @property {boolean} single - Displays item's SKU below the item
+     */
+    showSku: {
       type: Boolean,
       default: () => false,
       required: false
@@ -274,7 +292,7 @@ export default {
       if (this.activeMenu.categories && this.activeMenu.items) {
         return (
           this.activeMenu.items.length &&
-					!this.activeMenu.items.some(item => !item.selected)
+          !this.activeMenu.items.some(item => !item.selected)
         )
       } else {
         return false
@@ -283,7 +301,7 @@ export default {
     allItemsSelected () {
       return (
         this.activeItems.length &&
-				!this.activeItems.some(item => !item.selected)
+        !this.activeItems.some(item => !item.selected)
       )
     },
     infoMessage () {
@@ -309,11 +327,11 @@ export default {
   },
   methods: {
     /**
-		 * To change selection an item
-		 * @function
-		 * @param {object} item - The item to toggle
-		 * @returns {undefined}
-		 */
+     * To change selection an item
+     * @function
+     * @param {object} item - The item to toggle
+     * @returns {undefined}
+     */
     toggleItem (item) {
       if (this.single) {
         this.activeMenu.items.forEach(menuItem => {
@@ -339,10 +357,10 @@ export default {
       this.update()
     },
     /**
-		 * To toggle selection of all items
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle selection of all items
+     * @function
+     * @returns {undefined}
+     */
     toggleAllItems () {
       if (this.single) return
       const selected = this.allItemsSelected
@@ -360,20 +378,20 @@ export default {
       this.update()
     },
     /**
-		 * To change the active category
-		 * @function
-		 * @param {object} category - Selected category
-		 * @returns {undefined}
-		 */
+     * To change the active category
+     * @function
+     * @param {object} category - Selected category
+     * @returns {undefined}
+     */
     toggleCategory (category) {
       this.activeCategory = category
       this.update()
     },
     /**
-		 * To toggle selection of all categories
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle selection of all categories
+     * @function
+     * @returns {undefined}
+     */
     toggleAllCategories () {
       if (this.single) return
       const selected = this.allCategoriesSelected
@@ -391,11 +409,11 @@ export default {
       this.update()
     },
     /**
-		 * To select a menu and fetch its items
-		 * @function
-		 * @param {object} menu - The selected menu.
-		 * @returns {undefined}
-		 */
+     * To select a menu and fetch its items
+     * @function
+     * @param {object} menu - The selected menu.
+     * @returns {undefined}
+     */
     toggleMenu (menu) {
       this.activeCategory = {}
       this.activeMenu = menu
@@ -407,11 +425,11 @@ export default {
       }
     },
     /**
-		 * To change selection of all items in a menu
-		 * @function
-		 * @param {object} menu - The menu of items to toggle
-		 * @returns {undefined}
-		 */
+     * To change selection of all items in a menu
+     * @function
+     * @param {object} menu - The menu of items to toggle
+     * @returns {undefined}
+     */
     toggleAllInMenu (menu) {
       if (this.single) return
       const selected = this.menuSelected(menu)
@@ -442,11 +460,11 @@ export default {
       }
     },
     /**
-		 * To change selection of all items in a category
-		 * @function
-		 * @param {object} category - The category of items to toggle
-		 * @returns {undefined}
-		 */
+     * To change selection of all items in a category
+     * @function
+     * @param {object} category - The category of items to toggle
+     * @returns {undefined}
+     */
     toggleAllInCategory (category) {
       if (this.single) return
       const selected = this.categorySelected(category)
@@ -469,19 +487,19 @@ export default {
       this.update()
     },
     /**
-		 * To clear an error variable
-		 * @function
-		 * @param {string} name - Name of the variable to clear
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To clear an error variable
+     * @function
+     * @param {string} name - Name of the variable to clear
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To get a list of all menus for the current active location
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all menus for the current active location
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getMenus () {
       this.loading.menus = true
       this.menus = []
@@ -516,10 +534,10 @@ export default {
         })
     },
     /**
-		 * To get a list of categories for a menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of categories for a menu.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getMenuCategories () {
       this.loading.categories = true
       let pickerVue = this
@@ -545,10 +563,10 @@ export default {
         })
     },
     /**
-		 * To get a list of all items for a menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all items for a menu.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getAllItemsInMenu () {
       this.loading.items = true
       var pickerVue = this
@@ -578,11 +596,11 @@ export default {
         })
     },
     /**
-		 * To determine if a menu contains items to select
-		 * @function
-		 * @param {object} menu - The menu to check
-		 * @returns {boolean} True if it contains items, false if not
-		 */
+     * To determine if a menu contains items to select
+     * @function
+     * @param {object} menu - The menu to check
+     * @returns {boolean} True if it contains items, false if not
+     */
     menuSelectable (menu) {
       if (!menu.items) {
         return false
@@ -591,21 +609,21 @@ export default {
       }
     },
     /**
-		 * To determine if a category contains items to select
-		 * @function
-		 * @param {object} category - The category to check
-		 * @returns {boolean} True if it contains items, false if not
-		 */
+     * To determine if a category contains items to select
+     * @function
+     * @param {object} category - The category to check
+     * @returns {boolean} True if it contains items, false if not
+     */
     categorySelectable (category) {
       let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
       return menu.items.length !== 0
     },
     /**
-		 * To determine if a menu is selected
-		 * @function
-		 * @param {object} menu - The menu to check
-		 * @returns {boolean} True if it's selected, false if not
-		 */
+     * To determine if a menu is selected
+     * @function
+     * @param {object} menu - The menu to check
+     * @returns {boolean} True if it's selected, false if not
+     */
     menuSelected (menu) {
       if (menu.items) {
         return !menu.items.some(item => !item.selected)
@@ -614,11 +632,11 @@ export default {
       }
     },
     /**
-		 * To determine if a menu is partially selected (indeterminate)
-		 * @function
-		 * @param {object} menu - The menu to check
-		 * @returns {boolean} True if it's partially selected, false if not
-		 */
+     * To determine if a menu is partially selected (indeterminate)
+     * @function
+     * @param {object} menu - The menu to check
+     * @returns {boolean} True if it's partially selected, false if not
+     */
     menuPartiallySelected (menu) {
       if (menu.items) {
         let itemsLength = menu.items.length
@@ -630,11 +648,11 @@ export default {
       }
     },
     /**
-		 * To determine if a category is selected
-		 * @function
-		 * @param {object} category - The category to check
-		 * @returns {boolean} True if it's selected, false if not
-		 */
+     * To determine if a category is selected
+     * @function
+     * @param {object} category - The category to check
+     * @returns {boolean} True if it's selected, false if not
+     */
     categorySelected (category) {
       let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
       let items = menu.items.filter(item => {
@@ -643,11 +661,11 @@ export default {
       return items.length && !items.some(item => !item.selected)
     },
     /**
-		 * To determine if a category is partially selected (indeterminate)
-		 * @function
-		 * @param {object} category - The category to check
-		 * @returns {boolean} True if it's partially selected, false if not
-		 */
+     * To determine if a category is partially selected (indeterminate)
+     * @function
+     * @param {object} category - The category to check
+     * @returns {boolean} True if it's partially selected, false if not
+     */
     categoryPartiallySelected (category) {
       let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
       let items = menu.items.filter(item => {
@@ -659,10 +677,10 @@ export default {
       return selectedItemsLength !== 0 && selectedItemsLength !== itemsLength
     },
     /**
-		 * To notify the parent item selection has changed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To notify the parent item selection has changed
+     * @function
+     * @returns {undefined}
+     */
     update () {
       let selected = []
       let menusWithItems = this.menus.filter(menu => menu.items !== undefined)
@@ -679,7 +697,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .pointer {
   cursor: default;
 }
@@ -699,6 +717,9 @@ i {
 }
 .header {
   padding-left: 13px;
+  h4 {
+    padding: 0 5px;
+  }
 }
 .no-items {
   margin: 0;
@@ -709,22 +730,22 @@ i {
   color: #ccc;
 }
 .v-center {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
 }
 .width-100 {
-	width: 100%;
+  width: 100%;
 }
 .display-flex {
-	display: flex;
+  display: flex;
 }
 .justify-content-center {
-	justify-content: center;
+  justify-content: center;
 }
 .grey {
-	color: #5f5f5f;
+  color: #5f5f5f;
 }
 </style>

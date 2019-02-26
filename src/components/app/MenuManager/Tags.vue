@@ -162,14 +162,14 @@
                 v-for="tag in tags"
                 :id="'tag-' + tag.id"
                 :key="tag.id"
-                class="mt-list-item actions-at-left margin-top-15"
+                class="mt-list-item margin-top-15"
               >
-                <div class="list-item-actions">
+                <div class="actions-on-top margin-bottom-15">
                   <el-tooltip
                     v-if="$root.permissions['menu_manager tags update']"
                     content="Edit"
                     effect="light"
-                    placement="right"
+                    placement="bottom"
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
@@ -182,7 +182,7 @@
                     v-if="$root.permissions['menu_manager tags read'] && !$root.permissions['menu_manager tags update']"
                     content="View"
                     effect="light"
-                    placement="right"
+                    placement="bottom"
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
@@ -193,9 +193,9 @@
                   </el-tooltip>
                   <el-tooltip
                     v-if="can('menu_manager tags add items by sku')"
-                    content="Apply to Menu Items"
+                    content="Apply to Menu Items by SKU"
                     effect="light"
-                    placement="right"
+                    placement="bottom"
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
@@ -206,15 +206,28 @@
                   </el-tooltip>
                   <el-tooltip
                     v-if="can('menu_manager tags add modifier items by sku')"
-                    content="Apply to Modifier Items"
+                    content="Apply to Modifier Items by SKU"
                     effect="light"
-                    placement="right"
+                    placement="bottom"
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
                       @click.stop="openApplyTagToModifierItemsModal(tag)"
                     >
                       <extras-and-sides-icon />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="can('menu_manager tags add items')"
+                    content="Apply to individual Menu Items"
+                    effect="light"
+                    placement="bottom"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="displayMenuTreeModal(tag)"
+                    >
+                      <i class="fa fa-lg fa-crosshairs" />
                     </a>
                   </el-tooltip>
                 </div>
@@ -266,6 +279,13 @@
       :tag="selectedTag"
       @close="closeApplyTagToModifierItemsModal()"
     />
+    <menu-tree
+      v-if="showMenuTreeModal"
+      :selected-object="selectedTag"
+      :header-text="headerText"
+      :update-type="'tag'"
+      @closeMenuTreeModal="closeMenuTreeModal"
+    />
   </div>
 </template>
 
@@ -275,6 +295,7 @@ import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import ApplyTagToMenuItems from '@/components/app/MenuManager/Tags/ApplyTagToMenuItems'
 import ApplyTagToModifierItems from '@/components/app/MenuManager/Tags/ApplyTagToModifierItems'
+import MenuTree from '@/components/modules/MenuTree'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TagsFunctions from '../../../controllers/Tags'
 import EditTag from './Tags/EditTag'
@@ -288,12 +309,13 @@ export default {
     ApplyTagToMenuItems,
     ApplyTagToModifierItems,
     Breadcrumb,
-    LoadingScreen,
-    EditTag,
-    NoResults,
-    ResourcePicker,
     DishIcon,
-    ExtrasAndSidesIcon
+    EditTag,
+    ExtrasAndSidesIcon,
+    LoadingScreen,
+    MenuTree,
+    NoResults,
+    ResourcePicker
   },
   data () {
     return {
@@ -319,7 +341,8 @@ export default {
       headerText: '',
       imageMode: {
         newMenu: false
-      }
+      },
+      showMenuTreeModal: false
     }
   },
   computed: {
@@ -408,6 +431,25 @@ export default {
     closeApplyTagToModifierItemsModal () {
       this.showApplyTagToModifierItemsModal = false
       this.selectedTag = {}
+    },
+    /**
+     * To display the modal to apply a tag to multiple modifier items.
+     * @function
+     * @param {object} tag - The selected tag.
+     * @returns {undefined}
+     */
+    displayMenuTreeModal (tag) {
+      this.selectedTag = tag
+      this.headerText = "Tag '" + this.selectedTag.name + "'"
+      this.showMenuTreeModal = true
+    },
+    /**
+     * To close the menu tree modal.
+     * @function
+     * @returns {undefined}
+     */
+    closeMenuTreeModal () {
+      this.showMenuTreeModal = false
     },
     /**
      * To get the list of available tags.

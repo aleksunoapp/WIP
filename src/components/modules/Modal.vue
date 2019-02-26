@@ -9,7 +9,10 @@
       role="document"
       :style="{width: computedWidth}"
     >
-      <div class="modal-content">
+      <div
+        class="modal-content"
+        :class="{'height-100' : fullHeight}"
+      >
         <slot name="modal-header">
           <div class="modal-header">
             <button
@@ -116,6 +119,11 @@ export default {
     },
     width: {
       default: null
+    },
+    fullHeight: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   computed: {
@@ -206,6 +214,18 @@ export default {
 }
 .modal.in {
   background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-dialog {
+  height: calc(100vh - 6rem);
+}
+.modal-content {
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.modal-body {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .custom.in {
   background-color: #292e33;

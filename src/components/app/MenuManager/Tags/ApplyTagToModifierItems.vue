@@ -4,6 +4,7 @@
     :show="show"
     effect="fade"
     :width="900"
+    :full-height="true"
     @closeOnEscape="close"
   >
     <div
@@ -25,7 +26,7 @@
     </div>
     <div
       slot="modal-body"
-      class="modal-body"
+      class="modal-body height-100"
     >
       <div class="row">
         <div class="col-xs-12">
@@ -42,7 +43,13 @@
           </div>
         </div>
       </div>
+      <div class="alert alert-info">
+        The Tag will be applied to <span class="bold">
+          all
+        </span> Items with SKUs that match SKUs of Items you select.
+      </div>
       <modifier-item-picker
+        :show-sku="true"
         @update="itemsSelected"
       />
     </div>
@@ -103,7 +110,7 @@ export default {
      * @returns {undefined}
      */
     itemsSelected (selected) {
-      this.selected = selected
+      this.selected = selected.map(item => item.sku)
     },
     /**
      * To clear the current error.
@@ -125,6 +132,7 @@ export default {
       const _this = this
       if (!_this.selected.length) {
         _this.errorMessage = 'Select at least one item'
+        return
       }
       TagsFunctions.applyTagToModifierItems({
         itemSkus: _this.selected,
