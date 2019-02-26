@@ -5,7 +5,7 @@
 (function ({
   additional = false, // include Additional services (isHighlighted = true, route = additional-services)
   unselected = true, // include unselected services (isSelected = false, route = wait-services)
-  empty = true // zero services
+  empty = false // zero services
 }) {
 
   const getImage = (placeholder) => {
