@@ -113,7 +113,7 @@ export default Vue.extend({
         this.$route.name === 'wait-services'
 
       ) {
-        return this.$t('recommendations')
+        return this.$tc('recommendations', 2)
       }
       if (
         this.$route.name === 'summary' ||

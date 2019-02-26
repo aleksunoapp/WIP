@@ -65,7 +65,7 @@ const enCA = {
   // expired
   sorry: 'We are sorry but this link has expired.',
   // header
-  recommendations: 'Recommendations',
+  recommendations: 'Recommendation | Recommendations',
   help: 'Help',
   services_approved: 'Services Approved',
   how_it_works: 'How It Works',
@@ -174,7 +174,7 @@ const frCA = {
   // expired
   sorry: 'Désolé, mais ce lien est expiré.',
   // header
-  recommendations: 'Recommendations',
+  recommendations: 'Recommandation | Recommandations',
   help: 'Aide',
   services_approved: 'Services Précédemment Approuvés',
   how_it_works: 'Comment cela fonctionne-t-il?',
@@ -283,7 +283,7 @@ const esMX = {
   // expired
   sorry: 'Lo sentimos, pero este vínculo ha caducado.',
   // header
-  recommendations: 'Recomendaciones',
+  recommendations: 'Recomendación | Recomendaciones',
   help: 'Ayuda',
   services_approved: 'Servicios Aprobados Previamente',
   how_it_works: 'Cómo funciona',
