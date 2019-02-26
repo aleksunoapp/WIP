@@ -48,7 +48,7 @@
                   </p>
                 </div>
                 <div
-                  v-if="showImage"
+                  v-if="service.imageUrl"
                   class="images"
                 >
                   <image-container
@@ -231,13 +231,6 @@ export default Vue.extend({
         }
       }
       return text
-    },
-    showImage () {
-      const category = this.$store.getters.categoryById(this.service.category)
-      if (category && typeof category.serviceCategoryType === 'string') {
-        return category.serviceCategoryType.toLowerCase() !== 'pass' && category.id < '5'
-      }
-      return true
     },
     comments () {
       let customer = {
