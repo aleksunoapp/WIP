@@ -6,7 +6,6 @@ export const getters = {
 // services({
 //   isHighlighted,
 //   isSelected,
-//   wasSelected,
 //   categories,
 //   categoryTypes
 // })
@@ -14,7 +13,6 @@ export const getters = {
     return function ({
       isHighlighted,
       isSelected,
-      wasSelected,
       categories,
       categoryTypes
     }) {
@@ -34,13 +32,6 @@ export const getters = {
               }
               if (isSelected !== undefined) {
                 if (subService.isSelected === isSelected) {
-                  matches.push(true)
-                } else {
-                  matches.push(false)
-                }
-              }
-              if (wasSelected !== undefined) {
-                if (subService.wasSelected === wasSelected) {
                   matches.push(true)
                 } else {
                   matches.push(false)
@@ -78,13 +69,6 @@ export const getters = {
             }
             if (isSelected !== undefined) {
               if (service.isSelected === isSelected) {
-                matches.push(true)
-              } else {
-                matches.push(false)
-              }
-            }
-            if (wasSelected !== undefined) {
-              if (service.wasSelected === wasSelected) {
                 matches.push(true)
               } else {
                 matches.push(false)
@@ -199,10 +183,10 @@ export const getters = {
       return getters.categoryServices(id).filter(service => service.isHighlighted)
     }
     if (state.route.name === 'wait-services') {
-      return getters.categoryServices(id).filter(service => !service.isHighlighted && !service.wasSelected)
+      return getters.categoryServices(id).filter(service => !service.isHighlighted)
     }
     if (state.route.name === 'additional-summary') {
-      return getters.categoryServices(id).filter(service => service.isHighlighted || !service.wasSelected)
+      return getters.getServices({ isHighlighted: true, categories: [id] })
     }
     return getters.categoryServices(id)
   },

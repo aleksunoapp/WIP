@@ -78,7 +78,7 @@ export default {
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] })) + this.getTotal(this.additionalServices))
+        total = this.formatCurrency(this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] })) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
@@ -89,7 +89,7 @@ export default {
       if (this.$route.name === 'additional-services') {
         total = this.additionalServices.length
       } else if (this.$route.name === 'wait-services') {
-        total = this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }).length
+        total = this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }).length
       } else if (this.$route.name === 'services') {
         total = this.count.concern + this.count.fail + this.count.warning
       }

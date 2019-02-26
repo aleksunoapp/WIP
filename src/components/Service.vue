@@ -195,7 +195,6 @@ export default Vue.extend({
         total = this.formatCurrency(
           this.getTotal(
             this.getServices({
-              wasSelected: false,
               isHighlighted: false,
               categories: ['1', '2', '5']
             })
@@ -330,7 +329,7 @@ export default Vue.extend({
         }
         if (this.$route.name === 'additional-services') {
           if (this.count.actionable) {
-            if (this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }).length) {
+            if (this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }).length) {
               this.$router.push({ name: 'wait' })
             } else {
               this.getTax()

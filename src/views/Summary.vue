@@ -233,7 +233,7 @@ export default Vue.extend({
       }
       if (this.$route.name === 'additional-summary') {
         let subsum = 0
-        subsum += this.getTotal(this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }))
+        subsum += this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }))
         subsum += this.getTotal(this.additionalServices)
         total = this.formatCurrency(subsum)
       }
@@ -249,7 +249,7 @@ export default Vue.extend({
       }
       if (this.$route.name === 'additional-summary') {
         let subsum = 0
-        subsum += this.getTotal(this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }))
+        subsum += this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }))
         subsum += this.getTotal(this.additionalServices)
 
         total = this.formatCurrency(this.$store.getters.total.service + subsum + this.$store.state.tax)

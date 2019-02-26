@@ -155,7 +155,6 @@ export default Vue.extend({
       } else if (this.$route.name === 'wait-services') {
         this.$router.push({ name: 'additional-summary' })
       } else if (this.getServices({
-        wasSelected: false,
         isHighlighted: false,
         categories: ['1', '2', '5']
       }).length) {

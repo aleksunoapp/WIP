@@ -128,21 +128,13 @@ export const actions = {
             for (const service of servicesResponse) {
               if (!service.parentServiceId) {
                 if (!parentServices.some((duplicate) => duplicate.id === service.id)) {
-                  parentServices.push({
-                    ...service,
-                    wasSelected: service.isSelected
-                  })
+                  parentServices.push(service)
                 }
               }
             }
             for (const parentService of parentServices) {
               const subServices = servicesResponse
                 .filter((subService) => subService.parentServiceId === parentService.id)
-                .map(subService => ({
-                  ...subService,
-                  wasSelected: subService.isSelected
-                }))
-
               if (subServices.length) {
                 parentService.subServices = subServices
               }

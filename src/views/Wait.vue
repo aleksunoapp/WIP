@@ -40,7 +40,6 @@ export default Vue.extend({
     ...mapGetters(['getServices']),
     services () {
       return this.getServices({
-        wasSelected: false,
         isHighlighted: false,
         categories: ['1', '2', '5'] }
       )

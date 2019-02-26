@@ -3,7 +3,7 @@
 // paste in browser console
 
 (function ({
-  additional = false, // include Additional services (isHighlighted = true, route = additional-services)
+  additional = true, // include Additional services (isHighlighted = true, route = additional-services)
   unselected = true, // include unselected services (isSelected = false, route = wait-services)
   empty = false // zero services
 }) {
