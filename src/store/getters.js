@@ -133,7 +133,7 @@ export const getters = {
     }
     if (state.route.name === 'wait-services') {
       return getters.categoriesShown.filter(category => {
-        return getters.categoryContainsUnhiglightedUnselectedServices(category.id) &&
+        return getters.categoryContainsUnhiglightedServices(category.id) &&
           !getters.isPass(category.id)
       })
     }
@@ -217,8 +217,8 @@ export const getters = {
   categoryContainsHiglightedServices: (state, getters) => (id) => {
     return getters.categoryServices(id).some((service) => service.isHighlighted)
   },
-  categoryContainsUnhiglightedUnselectedServices: (state, getters) => (id) => {
-    return getters.categoryServices(id).some((service) => !service.isHighlighted && !service.isSelected)
+  categoryContainsUnhiglightedServices: (state, getters) => (id) => {
+    return getters.categoryServices(id).some((service) => !service.isHighlighted)
   },
   count: (state, getters) => {
     let fail = 0
