@@ -62,7 +62,12 @@ export const actions = {
         commit('setCategories', categories)
         commit('setReasons', declinedReasons)
         // if selected language isn't supported, use locale from payload
-        if (!supportedLanguages.find(locale => locale.culture === state.locale)) {
+        const match = supportedLanguages.find(locale => {
+          if (Intl.getCanonicalLocales(locale.culture)[0] === state.locale) {
+            return locale
+          }
+        })
+        if (match === undefined) {
           commit('setLocale', local)
         }
         commit('setRespondBy', responseBy)

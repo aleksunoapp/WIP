@@ -49,7 +49,7 @@ const fetchWithTimeout = async function (url, options = {}) {
 }
 
 export const fetchMetadata = () => {
-  const url = new URL(`${baseUrl}/metadata/${store.state.slug}`)
+  const url = new URL(`${baseUrl}/metadata/${store.state.slug}/${store.state.locale}`)
   return fetchWithTimeout(url)
     .then((response) => checkStatus(response))
     .then((response) => response.json())

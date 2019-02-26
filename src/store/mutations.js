@@ -87,7 +87,10 @@ export const mutations = {
     state.expired = expired
   },
   setLanguages (state, supportedLanguages) {
-    state.languages = supportedLanguages
+    state.languages = supportedLanguages.map(language => ({
+      culture: Intl.getCanonicalLocales(language.culture)[0],
+      name: language.name
+    }))
   },
   setCustomer (state, { firstName, lastName, isBusiness }) {
     state.customer = { firstName, lastName, isBusiness }
