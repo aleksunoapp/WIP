@@ -75,8 +75,8 @@ export default {
       required: true
     },
     countTotal: {
-      type: String,
-      default: () => '',
+      type: Number,
+      default: () => 0,
       required: true
     }
   },
