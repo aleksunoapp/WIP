@@ -40,7 +40,8 @@ export default Vue.extend({
   methods: {
     ...mapMutations([
       'acceptTermsAndConditions',
-      'declineTermsAndConditions'
+      'declineTermsAndConditions',
+      'logEvent'
     ]),
     accept () {
       this.acceptTermsAndConditions()
