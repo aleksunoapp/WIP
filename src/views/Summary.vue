@@ -186,6 +186,7 @@ import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import { getTotal, formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 
 export default Vue.extend({
+  name: 'Summary',
   components: {
     TransitionHeight
   },
