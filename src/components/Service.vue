@@ -41,7 +41,7 @@
               >
                 <div class="service">
                   <p class="name">
-                    {{ name }}
+                    {{ service.name }}
                   </p>
                   <p class="price">
                     {{ price }}
@@ -203,13 +203,6 @@ export default Vue.extend({
         total = this.formatCurrency(this.total.inspection)
       }
       return total
-    },
-    name () {
-      if (!this.service.parentServiceId) {
-        return this.service.name
-      } else {
-        return this.serviceById(this.service.parentServiceId).name
-      }
     },
     price () {
       if (this.service.price === 0 && this.service.laborMatrixPayment) {
