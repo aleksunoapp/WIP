@@ -60,48 +60,30 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { getTotal, formatCurrency } from '@/mixins.js'
 
 export default {
   name: 'DesktopNavigation',
-  mixins: [getTotal, formatCurrency],
   props: {
     categories: {
       type: Array,
       default: () => [],
       required: true
+    },
+    displayTotal: {
+      type: String,
+      default: () => '',
+      required: true
+    },
+    countTotal: {
+      type: String,
+      default: () => '',
+      required: true
     }
   },
   computed: {
-    displayTotal () {
-      let total = ''
-      if (this.$route.name === 'additional-services') {
-        total = this.formatCurrency(this.getTotal(this.additionalServices))
-      } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] })) + this.getTotal(this.additionalServices))
-      } else if (this.$route.name === 'services') {
-        total = this.formatCurrency(this.total.inspection)
-      }
-      return total
-    },
-    countTotal () {
-      let total = ''
-      if (this.$route.name === 'additional-services') {
-        total = this.additionalServices.length
-      } else if (this.$route.name === 'wait-services') {
-        total = this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }).length
-      } else if (this.$route.name === 'services') {
-        total = this.count.concern + this.count.fail + this.count.warning
-      }
-      return total
-    },
     ...mapGetters([
       'categoryServicesShownOnRoute',
-      'categoryContainsHiglightedServices',
-      'additionalServices',
-      'getServices',
-      'total',
-      'count'
+      'categoryContainsHiglightedServices'
     ]),
     ...mapState([
       'activeCategory'

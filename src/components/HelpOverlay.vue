@@ -574,6 +574,10 @@ export default Vue.extend({
           let top = 20
           this.approve.style.top = top
           this.approve.style.left = label.offsetLeft + listScrollContainer.offsetLeft
+          if (window.innerWidth < 992) {
+            this.approve.style.top += 50
+            this.approve.style.left -= 10
+          }
           this.approve.show = true
         }
         this.page = page
