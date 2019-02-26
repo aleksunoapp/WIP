@@ -318,6 +318,7 @@ export default Vue.extend({
         this.$refs.printed.style.color = '#000000'
       })
       this.panned = true
+      this.pad.off()
       this.logEvent('Clicked to sign')
     },
     signed ({ distance }) {
@@ -455,7 +456,6 @@ export default Vue.extend({
           .sign, .clear {
             margin: 1px;
             border: none;
-            padding: 1rem;
             background-color: var(--white);
             text-transform: uppercase;
             font-weight: 700;
@@ -467,7 +467,6 @@ export default Vue.extend({
           .sign:disabled {
             opacity: 0.75;
             transition: opacity 0.3;
-            font-weight: 400;
           }
         }
       }
