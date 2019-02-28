@@ -10,7 +10,7 @@
       name="fade"
       mode="out-in"
     >
-      <keep-alive>
+      <keep-alive include="Summary">
         <router-view />
       </keep-alive>
     </transition>
