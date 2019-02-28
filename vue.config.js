@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    port: 9000
+  },
   runtimeCompiler: true,
   chainWebpack: (config) => {
     const svgRule = config.module.rule('svg')
