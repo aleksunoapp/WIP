@@ -46,15 +46,6 @@
                   <p class="price">
                     {{ price }}
                   </p>
-                </div>
-                <div
-                  v-if="service.imageUrl"
-                  class="images"
-                >
-                  <img
-                    :src="service.imageUrl"
-                    class="image"
-                  >
                   <div
                     v-if="service.isHighlighted"
                     class="badge"
@@ -62,6 +53,11 @@
                     {{ $t("updated") }}
                   </div>
                 </div>
+                <img
+                  v-if="service.imageUrl"
+                  :src="service.imageUrl"
+                  class="image"
+                >
                 <div class="details">
                   <p
                     v-if="warranty"
@@ -431,6 +427,7 @@ export default Vue.extend({
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         .service {
+          position: relative;
           flex-shrink: 0;
           display: flex;
           justify-content: space-between;
@@ -451,35 +448,23 @@ export default Vue.extend({
             background-color: var(--grey-light-background);
           }
         }
-        .images {
+        .badge {
+          position: absolute;
+          bottom: -4rem;
+          left: 2rem;
+          padding: 0.5rem 1rem;
+          background-color: var(--green-pastel);
+          border-radius: 500px;
+          font-family: 'Futura Heavy';
+          color: var(--white);
+          text-transform: uppercase;
+        }
+        .image {
+          width: 100%;
           max-height: 50%;
-          position: relative;
-          flex-shrink: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
           padding: 1rem 0;
+          object-fit: contain;
           background-color: var(--grey-light-background);
-          overflow: auto;
-          .badge {
-            position: absolute;
-            top: 1rem;
-            left: 2rem;
-            padding: 0.5rem 1rem;
-            background-color: var(--green-pastel);
-            border-radius: 500px;
-            font-family: 'Futura Heavy';
-            color: var(--white);
-            text-transform: uppercase;
-          }
-          .image {
-            max-width: 100%;
-            max-height: 100%;
-          }
-          .pagination {
-            position: absolute;
-            bottom: 2rem;
-          }
         }
         .details {
           padding: 2rem;

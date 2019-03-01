@@ -187,7 +187,10 @@
                 :src="service.imageUrl"
                 class="image"
               >
-              <div class="badge">
+              <div
+                v-if="service.isHighlighted"
+                class="badge"
+              >
                 {{ $t("updated") }}
               </div>
             </div>
@@ -640,7 +643,7 @@ export default Vue.extend({
         this.viewService(service)
 
         setTimeout(() => {
-          const details = document.querySelector('.images')
+          const details = document.querySelector('.image')
           if (!details) {
             this.details.show = false
           } else {
