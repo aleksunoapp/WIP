@@ -43,7 +43,9 @@
               v-model="code"
               class="input"
               type="text"
+              :name="inputName"
               autofocus
+              :autocomplete="inputAutocomplete"
             >
             <button
               class="button cta"
@@ -72,6 +74,12 @@ export default Vue.extend({
     error: false
   }),
   computed: {
+    inputName () {
+      return this.customer.isBusiness ? null : 'lname'
+    },
+    inputAutocomplete () {
+      return this.customer.isBusiness ? null : 'family-name'
+    },
     ...mapState([
       'drawer',
       'customer',
