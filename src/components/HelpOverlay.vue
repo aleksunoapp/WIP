@@ -310,8 +310,8 @@
         <div class="bottom">
           <pagination
             class="pagination"
-            :total="5"
-            :current="page"
+            :total="noOfHelpPages"
+            :current="paginationPage"
           />
           <button
             ref="button"
@@ -400,7 +400,8 @@ export default Vue.extend({
     ...mapGetters([
       'categoriesShownOnRoute',
       'categoryServicesShownOnRoute',
-      'categoryContainsHiglightedServices'
+      'categoryContainsHiglightedServices',
+      'count'
     ]),
     buttonText () {
       return this.page < 5 ? this.$t('next') : this.$t('got_it')
@@ -419,6 +420,29 @@ export default Vue.extend({
     },
     routeName () {
       return this.$route.name
+    },
+    noOfHelpPages () {
+      let no = 5
+      if (!this.count.actionable) {
+        no = 3
+      }
+      return no
+    },
+    paginationPage () {
+      let page
+      if (!this.count.actionable) {
+        let pageMap = {
+          1: 1,
+          2: 2,
+          3: 2,
+          4: 2,
+          5: 3
+        }
+        page = pageMap[this.page]
+      } else {
+        page = this.page
+      }
+      return page
     }
   },
   watch: {
@@ -556,6 +580,10 @@ export default Vue.extend({
       }
 
       if (page === 2) {
+        if (!this.count.actionable) {
+          this.setPage(3)
+          return
+        }
         const input = document.querySelector('input[type="checkbox"]')
         const label = document.querySelector('.checkbox')
 
@@ -590,13 +618,19 @@ export default Vue.extend({
           if (category.id < '5') {
             if (typeof category.serviceCategoryType === 'string') {
               if (category.serviceCategoryType.toLowerCase() !== 'pass') {
-                service = this.categoryServicesShownOnRoute(category.id)[0]
+                const services = this.categoryServicesShownOnRoute(category.id)
+                if (services.length) {
+                  service = services[0]
+                  break
+                }
               }
             }
           }
         }
+        // in empty flow, there's nothing to show
         if (!service) {
-          service = this.categoryServicesShownOnRoute(this.categoriesShownOnRoute[0].id)[0]
+          this.setPage(4)
+          return
         }
         this.viewService(service)
 
