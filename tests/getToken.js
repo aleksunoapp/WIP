@@ -477,7 +477,7 @@
       "mediaId": null,
       "isSelected": true,
       "isHighlighted": false,
-      "declinedReasonId": 1,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -512,7 +512,7 @@
       "mediaId": null,
       "isSelected": true,
       "isHighlighted": false,
-      "declinedReasonId": 1,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -560,7 +560,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 2,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -608,7 +608,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -656,7 +656,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -704,7 +704,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -752,7 +752,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -800,7 +800,7 @@
       "mediaId": null,
       "isSelected": false,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
