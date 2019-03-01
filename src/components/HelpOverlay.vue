@@ -75,9 +75,9 @@
               <div
                 class="header"
                 :class="{
+                  'red' : categoriesShownOnRoute[0].id === '1',
                   'green' : categoriesShownOnRoute[0].id === '2',
                   'yellow' : categoriesShownOnRoute[0].id === '3',
-                  'red' : categoriesShownOnRoute[0].id === '4',
                   'grey' : categoriesShownOnRoute[0].id === '5',
                 }"
                 :style="`width: ${category.style.width}px;`"
@@ -87,9 +87,9 @@
                   <span
                     class="count"
                     :class="{
+                      'red' : categoriesShownOnRoute[0].id === '1',
                       'green' : categoriesShownOnRoute[0].id === '2',
                       'yellow' : categoriesShownOnRoute[0].id === '3',
-                      'red' : categoriesShownOnRoute[0].id === '4',
                       'grey' : categoriesShownOnRoute[0].id === '5',
                     }"
                   >
