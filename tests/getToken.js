@@ -3,9 +3,9 @@
 // paste in browser console
 
 (function ({
-  additional = true, // include Additional services (isHighlighted = true, route = additional-services)
-  unselected = true, // include unselected services (isSelected = false, route = wait-services)
-  empty = false // zero services
+  additional = false, // include Additional services (isHighlighted = true, route = additional-services)
+  unselected = false, // include unselected services (isSelected = false, route = wait-services)
+  empty = true // zero services
 }) {
 
   const getImage = (placeholder) => {
@@ -840,7 +840,7 @@
     let categoryIds = ['1', '2', '3', '4', '6', '7', '8', '9']
 
     if (empty) {
-      categoryIds = categoryIds.filter(id => id === '4')
+      categoryIds = ['3', '4']
     }
     for (const categoryId of categoryIds) {
       for (let i = 0; i < length; i++) {
