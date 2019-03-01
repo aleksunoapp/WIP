@@ -90,11 +90,11 @@ export default Vue.extend({
     ]),
     locale: {
       get () {
-        return this.$store.state.locale
+        return this.$store.state.locale.selected
       },
       set (code) {
         this.setLocale(code)
-        this.$i18n.locale = this.locale
+        this.$i18n.locale = this.$store.state.locale.selected
         this.getMetadata()
       }
     }

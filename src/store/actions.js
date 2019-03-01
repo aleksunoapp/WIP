@@ -61,9 +61,10 @@ export const actions = {
         commit('setCustomer', { firstName, lastName, isBusiness })
         commit('setCategories', categories)
         commit('setReasons', declinedReasons)
-        // if selected language isn't supported, use locale from payload
+        commit('setDefaultLocale', local)
+        // if 'en-CA' language isn't supported, use locale from payload
         const match = supportedLanguages.find(locale => {
-          if (Intl.getCanonicalLocales(locale.culture)[0] === state.locale) {
+          if (Intl.getCanonicalLocales(locale.culture)[0] === state.locale.selected) {
             return locale
           }
         })

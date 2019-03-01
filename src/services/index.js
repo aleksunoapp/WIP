@@ -49,7 +49,10 @@ const fetchWithTimeout = async function (url, options = {}) {
 }
 
 export const fetchMetadata = () => {
-  const url = new URL(`${baseUrl}/metadata/${store.state.slug}/${store.state.locale}`)
+  let url = new URL(`${baseUrl}/metadata/${store.state.slug}`)
+  if (store.state.locale.selected !== store.state.locale.default) {
+    url = url + `/${store.state.locale.selected}`
+  }
   return fetchWithTimeout(url)
     .then((response) => checkStatus(response))
     .then((response) => response.json())
@@ -85,7 +88,7 @@ export const fetchToken = async () => {
 }
 
 export const fetchServices = async () => {
-  const url = new URL(`${baseUrl}/services/${store.state.slug}/${store.state.locale}`)
+  const url = new URL(`${baseUrl}/services/${store.state.slug}/${store.state.locale.selected}`)
   const headers = new Headers({
     Authorization: `Bearer ${store.state.token}`
   })
@@ -99,7 +102,7 @@ export const fetchServices = async () => {
 }
 
 export const fetchInspectionReportUrl = async () => {
-  const url = new URL(`${baseUrl}/inspection/${store.state.slug}/${store.state.locale}`)
+  const url = new URL(`${baseUrl}/inspection/${store.state.slug}/${store.state.locale.selected}`)
   const headers = new Headers({
     Authorization: `Bearer ${store.state.token}`
   })

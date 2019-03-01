@@ -2,7 +2,7 @@ export const formatCurrency = {
   methods: {
     formatCurrency (number) {
       if (typeof number !== 'number') return ''
-      const locale = this.$store.state.locale
+      const locale = this.$store.state.locale.selected
       const local = number.toLocaleString(locale, {
         minimumFractionDigits: 2, maximumFractionDigits: 2
       })

@@ -75,7 +75,14 @@ export const mutations = {
       const locales = Intl.getCanonicalLocales(locale)
       locale = locales[0]
     } catch (e) {}
-    state.locale = locale
+    state.locale.selected = locale
+  },
+  setDefaultLocale (state, locale) {
+    try {
+      const locales = Intl.getCanonicalLocales(locale)
+      locale = locales[0]
+    } catch (e) {}
+    state.locale.default = locale
   },
   setDealer (state, dealerContactInfo) {
     state.dealer = dealerContactInfo

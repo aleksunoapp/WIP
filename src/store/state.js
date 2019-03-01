@@ -54,7 +54,10 @@ export const state = {
     logIn: false,
     sendServices: false
   },
-  locale: 'en-CA',
+  locale: {
+    selected: 'en-CA',
+    default: 'en-CA'
+  },
   log: {
     clientId: '',
     events: []
