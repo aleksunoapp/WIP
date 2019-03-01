@@ -172,14 +172,21 @@
         >
           <div
             class="details"
-            :style="`top: ${details.style.top}px; left: ${details.style.left}px; width: ${details.style.width}px;`"
+            :style="`
+              top: ${details.style.top}px;
+              left: ${details.style.left}px;
+              width: ${details.style.width}px;
+            `"
             @click.stop
           >
-            <div class="images">
-              <image-container
+            <div
+              class="images"
+              :style="`height: ${details.style.height}px;`"
+            >
+              <img
                 :src="service.imageUrl"
                 class="image"
-              />
+              >
               <div class="badge">
                 {{ $t("updated") }}
               </div>
@@ -335,13 +342,11 @@
 <script>
 import Vue from 'vue'
 import { mapGetters, mapMutations, mapState, mapActions } from 'vuex'
-import ImageContainer from '@/components/ImageContainer.vue'
 import Pagination from '@/components/Pagination.vue'
 import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
-    ImageContainer,
     Pagination
   },
   mixins: [formatCurrency],
@@ -643,6 +648,7 @@ export default Vue.extend({
             this.details.style.left = details.offsetLeft
             this.details.style.bottom = details.offsetTop + details.offsetHeight
             this.details.style.width = details.offsetWidth
+            this.details.style.height = details.offsetHeight
             this.details.show = true
           }
           this.page = page
@@ -993,7 +999,7 @@ export default Vue.extend({
     .images {
       position: relative;
       width: 100%;
-      height: 200px;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1001,9 +1007,6 @@ export default Vue.extend({
       max-height: 50vh;
       padding: 1rem 0;
       background-color: var(--grey-light-background);
-      @media (min-height: 768px) {
-        height: 300px;
-      }
       .badge {
         position: absolute;
         top: 1rem;
@@ -1018,6 +1021,7 @@ export default Vue.extend({
       }
       .image {
         max-width: 100%;
+        max-height: 100%;
       }
     }
     .bubble {

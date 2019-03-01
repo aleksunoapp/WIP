@@ -51,10 +51,10 @@
                   v-if="service.imageUrl"
                   class="images"
                 >
-                  <image-container
+                  <img
                     :src="service.imageUrl"
                     class="image"
-                  />
+                  >
                   <div
                     v-if="service.isHighlighted"
                     class="badge"
@@ -142,12 +142,8 @@
 import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { getTotal, focus, formatCurrency } from '@/mixins.js'
-import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
-  components: {
-    ImageContainer
-  },
   mixins: [getTotal, focus, formatCurrency],
   computed: {
     ...mapState([
@@ -389,10 +385,11 @@ export default Vue.extend({
     background-color: var(--white);
     pointer-events: initial;
     .top {
+      height: 100%;
+      min-height: 0px;
       display: flex;
       flex-direction: column;
       flex: 1;
-      min-height: 0px;
       .category {
         display: flex;
         justify-content: space-between;
@@ -428,6 +425,7 @@ export default Vue.extend({
         }
       }
       .body {
+        height: 100%;
         display: flex;
         flex-direction: column;
         overflow-y: auto;
@@ -454,17 +452,15 @@ export default Vue.extend({
           }
         }
         .images {
+          max-height: 50%;
           position: relative;
-          height: 200px;
           flex-shrink: 0;
           display: flex;
           justify-content: center;
           align-items: center;
           padding: 1rem 0;
           background-color: var(--grey-light-background);
-          @media (min-height: 768px) {
-            height: 300px;
-          }
+          overflow: auto;
           .badge {
             position: absolute;
             top: 1rem;
@@ -478,6 +474,7 @@ export default Vue.extend({
           }
           .image {
             max-width: 100%;
+            max-height: 100%;
           }
           .pagination {
             position: absolute;
