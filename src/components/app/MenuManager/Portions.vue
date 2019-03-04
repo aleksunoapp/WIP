@@ -208,6 +208,19 @@
                       <i class="icon-layers" />
                     </a>
                   </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager portions delete']"
+                    content="Delete"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="openDeleteModal(portion)"
+                    >
+                      <i class="fa fa-lg fa-trash" />
+                    </a>
+                  </el-tooltip>
                 </div>
                 <div class="list-thumb">
                   <a v-if="portion.icon_url.length">
@@ -248,6 +261,12 @@
       @updatePortion="updatePortion"
       @closeEditPortionModal="closeEditPortionModal"
     />
+    <delete-portion
+      v-if="showDeletePortionModal"
+      :portion="toDelete"
+      @update="getPortions"
+      @close="closeDeleteModal"
+    />
     <modifier-tree
       v-if="showModifierTreeModal"
       :selected-object="selectedPortion"
@@ -261,12 +280,11 @@
 <script>
 import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
-import Dropdown from '../../modules/Dropdown'
 import NoResults from '../../modules/NoResults'
-import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
 import PortionsFunctions from '../../../controllers/Portions'
 import EditPortion from './Portions/EditPortion'
+import DeletePortion from '@/components/app/MenuManager/Portions/DeletePortion'
 import ModifierTree from '../../modules/ModifierTree'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -274,11 +292,10 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
   components: {
     Breadcrumb,
-    Modal,
     LoadingScreen,
     NoResults,
-    Dropdown,
     EditPortion,
+    DeletePortion,
     ModifierTree,
     ResourcePicker
   },
@@ -306,7 +323,9 @@ export default {
       headerText: '',
       imageMode: {
         newMenu: false
-      }
+      },
+      toDelete: {},
+      showDeletePortionModal: false
     }
   },
   mounted () {
@@ -315,56 +334,56 @@ export default {
   },
   methods: {
     /**
-		 * To toggle between the open and closed state of the resource picker
-		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
-		 * @returns {undefined}
-		 */
+     * To toggle between the open and closed state of the resource picker
+     * @function
+     * @param {string} object - The name of the object the image is for
+     * @param {object} value - The open / closed value of the picker
+     * @returns {undefined}
+     */
     toggleImageMode (object, value) {
       this.imageMode[object] = value
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.newPortion.icon_url = val.image_url
     },
     /**
-		 * To display the modal to apply a portion to multiple modifier items.
-		 * @function
-		 * @param {object} portion - The selected portion.
-		 * @returns {undefined}
-		 */
+     * To display the modal to apply a portion to multiple modifier items.
+     * @function
+     * @param {object} portion - The selected portion.
+     * @returns {undefined}
+     */
     displayMenuTreeModal (portion) {
       this.selectedPortion = portion
       this.headerText = "Portion '" + this.selectedPortion.name + "'"
       this.showModifierTreeModal = true
     },
     /**
-		 * To close the menu tree modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the menu tree modal.
+     * @function
+     * @returns {undefined}
+     */
     closeModifierTreeModal () {
       this.showModifierTreeModal = false
     },
     /**
-		 * To toggle the create portion panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create portion panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
     toggleCreatePortionPanel () {
       this.createPortionCollapse = !this.createPortionCollapse
     },
     /**
-		 * To get the list of available portions.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the list of available portions.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getPortions () {
       this.loadingPortionsData = true
       var portionsVue = this
@@ -393,10 +412,10 @@ export default {
         })
     },
     /**
-		 * To check if the portion data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the portion data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validatePortionData () {
       var portionsVue = this
       return new Promise(function (resolve, reject) {
@@ -413,10 +432,10 @@ export default {
       })
     },
     /**
-		 * To create a new portion type.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To create a new portion type.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     createPortion () {
       var portionsVue = this
       portionsVue.clearError('errorMessage')
@@ -459,10 +478,10 @@ export default {
         })
     },
     /**
-		 * To clear the new menu form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new menu form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewPortion () {
       this.newPortion = {
         name: '',
@@ -472,11 +491,11 @@ export default {
       }
     },
     /**
-		 * To close the modal to create tags and add the newly created tag to the list.
-		 * @function
-		 * @param {object} val - The tag object to be added to the list.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To close the modal to create tags and add the newly created tag to the list.
+     * @function
+     * @param {object} val - The tag object to be added to the list.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     addPortion (val) {
       if (parseInt(val.order) > 0) {
         var done = false
@@ -495,11 +514,11 @@ export default {
       }
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Portion has been created'
@@ -518,41 +537,59 @@ export default {
       })
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {string} name - Name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {string} name - Name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To show the modal to edit portion details.
-		 * @function
-		 * @param {object} portion - The selected portion object.
-		 * @returns {undefined}
-		 */
+     * To show the modal to edit portion details.
+     * @function
+     * @param {object} portion - The selected portion object.
+     * @returns {undefined}
+     */
     editPortion (portion) {
       this.selectedPortionId = portion.id
       this.showEditPortionModal = true
     },
     /**
-		 * To close the modal to edit portion details.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit portion details.
+     * @function
+     * @returns {undefined}
+     */
     closeEditPortionModal () {
       this.showEditPortionModal = false
     },
     /**
-		 * To close the modal to edit portion details and update the selected portion on the portions list.
-		 * @function
-		 * @param {object} val - The portion object to be updated on the list.
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit portion details and update the selected portion on the portions list.
+     * @function
+     * @param {object} val - The portion object to be updated on the list.
+     * @returns {undefined}
+     */
     updatePortion (val) {
       this.showEditPortionModal = false
       this.getPortions()
+    },
+    /**
+     * To open the delete modal
+     * @function
+     * @param {object} portion - The portion object to delete.
+     * @returns {undefined}
+     */
+    openDeleteModal (portion) {
+      this.toDelete = portion
+      this.showDeletePortionModal = true
+    },
+    /**
+     * To close the delete modal
+     * @function
+     * @returns {undefined}
+     */
+    closeDeleteModal () {
+      this.showDeletePortionModal = false
     }
   }
 }
