@@ -202,6 +202,19 @@
                         <i class="fa fa-lg fa-eye" />
                       </a>
                     </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['reward_tiers delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="showDeleteModal(tier, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
                   </div>
                   <div class="list-icon-container">
                     <i class="fa fa-angle-right" />
@@ -367,10 +380,10 @@ export default {
   },
   methods: {
     /**
-		 * To get a list of reward tiers.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of reward tiers.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getRewardTiers () {
       this.displayRewardsData = true
       this.rewardTiers = []
@@ -399,30 +412,30 @@ export default {
         })
     },
     /**
-		 * To show the modal for editing a reward tier.
-		 * @function
-		 * @param {object} tier - The tier object that is to be edited.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To show the modal for editing a reward tier.
+     * @function
+     * @param {object} tier - The tier object that is to be edited.
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     showEditTierModal (tier, event) {
       event.stopPropagation()
       this.passedRewardTier = tier
       this.displayEditTierModal = true
     },
     /**
-		 * To close the modal for editing a reward tier.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for editing a reward tier.
+     * @function
+     * @returns {undefined}
+     */
     closeEditTierModal () {
       this.displayEditTierModal = false
     },
     /**
-		 * To clear the new reward tier form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new reward tier form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewRewardTier () {
       this.newRewardsTier = {
         name: '',
@@ -432,10 +445,10 @@ export default {
       }
     },
     /**
-		 * To check if the category data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the category data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateTierData () {
       var rewardsVue = this
       return new Promise(function (resolve, reject) {
@@ -452,10 +465,10 @@ export default {
       })
     },
     /**
-		 * To create a new rewards tier.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To create a new rewards tier.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     createRewardsTier () {
       var rewardsVue = this
       rewardsVue.clearError('errorMessage')
@@ -500,20 +513,20 @@ export default {
         })
     },
     /**
-		 * To add the newly created rewards tier to the list of tiers.
-		 * @function
-		 * @param {object} tier - The tier object that is to be added.
-		 * @returns {undefined}
-		 */
+     * To add the newly created rewards tier to the list of tiers.
+     * @function
+     * @param {object} tier - The tier object that is to be added.
+     * @returns {undefined}
+     */
     addTier (tier) {
       this.rewardTiers.push(tier)
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Reward Tier has been created'
@@ -532,21 +545,21 @@ export default {
       })
     },
     /**
-		 * To update the rewards tier info.
-		 * @function
-		 * @param {object} tier - The tier object that is to be updated.
-		 * @returns {undefined}
-		 */
+     * To update the rewards tier info.
+     * @function
+     * @param {object} tier - The tier object that is to be updated.
+     * @returns {undefined}
+     */
     updateRewardTier (tier) {
       this.getRewardTiers()
       this.displayEditTierModal = false
     },
     /**
-		 * To route to the reward items page.
-		 * @function
-		 * @param {object} tier - The selected tier.
-		 * @returns {undefined}
-		 */
+     * To route to the reward items page.
+     * @function
+     * @param {object} tier - The selected tier.
+     * @returns {undefined}
+     */
     openTier (tier) {
       this.$router.passedTier = tier
       this.$router.push({
@@ -555,36 +568,36 @@ export default {
       })
     },
     /**
-		 * To clear an error.
-		 * @function
-		 * @param {string} name - The error variable name
-		 * @returns {undefined}
-		 */
+     * To clear an error.
+     * @function
+     * @param {string} name - The error variable name
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To toggle the create tier panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create tier panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
     toggleCreateTierPanel () {
       this.createTierCollapse = !this.createTierCollapse
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @returns {undefined}
+     */
     clearDeleteError () {
       this.deleteErrorMessage = ''
     },
     /**
-		 * To show the modal for deleting a tier.
-		 * @function
-		 * @param {object} tier - The selected tier object.
-		 * @returns {undefined}
-		 */
+     * To show the modal for deleting a tier.
+     * @function
+     * @param {object} tier - The selected tier object.
+     * @returns {undefined}
+     */
     showDeleteModal (tier) {
       this.tierToBeDeleted.id = tier.id
       this.tierToBeDeleted.name = tier.name
@@ -592,10 +605,10 @@ export default {
       this.displayDeleteModal = true
     },
     /**
-		 * To delete a tier in the API.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To delete a tier in the API.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     deleteTier () {
       this.deleting = true
       var rewardsVue = this
@@ -629,12 +642,13 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmDelete (payload = {}) {
+      if (!payload) { payload = {} }
       let title = 'Success'
       let text = 'The Reward Tier has been deleted'
       let type = 'success'
@@ -652,10 +666,10 @@ export default {
       })
     },
     /**
-		 * To clear the tier delete form
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the tier delete form
+     * @function
+     * @returns {undefined}
+     */
     resetTierToBeDeleted () {
       this.tierToBeDeleted = {
         id: null,
@@ -663,10 +677,10 @@ export default {
       }
     },
     /**
-		 * To close the modal for deleting a tier.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for deleting a tier.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteModal () {
       this.displayDeleteModal = false
     }

@@ -269,6 +269,19 @@
                         <i class="icon-layers" />
                       </a>
                     </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['reward_tiers items delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="showDeleteModal(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
                   </div>
                   <div style="min-height:95px">
                     <div class="col-sm-12">
@@ -494,11 +507,11 @@ export default {
       }
     },
     /**
-		 * To determine which function to call based on the update type passed in by the parent as a prop.
-		 * @function
-		 * @param {object} selection - An object containing the selected SKUs
-		 * @returns {undefined}
-		 */
+     * To determine which function to call based on the update type passed in by the parent as a prop.
+     * @function
+     * @param {object} selection - An object containing the selected SKUs
+     * @returns {undefined}
+     */
     applySelectedItems (selection) {
       this.selectedItem.sku = selection.selectedSKUs
       let payload = {
@@ -520,7 +533,7 @@ export default {
             rewardItemsVue.showApplySuccess(response.payload)
           } else {
             rewardItemsVue.menuModifierTreeErrorMessage =
-							response.message
+              response.message
           }
         })
         .catch(reason => {
@@ -533,11 +546,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showApplySuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Items have been saved'
@@ -556,31 +569,31 @@ export default {
       })
     },
     /**
-		 * To close the menu tree modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the menu tree modal.
+     * @function
+     * @returns {undefined}
+     */
     closeMenuModifierTreeModal () {
       this.selectedItem = {}
       this.menuModifierTreeErrorMessage = ''
       this.showMenuModifierTreeModal = false
     },
     /**
-		 * To close the menu tree modal.
-		 * @function
-		 * @param {object} data - The data object containing item id and selected SKUs.
-		 * @returns {undefined}
-		 */
+     * To close the menu tree modal.
+     * @function
+     * @param {object} data - The data object containing item id and selected SKUs.
+     * @returns {undefined}
+     */
     closeMenuModifierTreeModalAndUpdate (data) {
       this.menuModifierTreeErrorMessage = ''
       this.showMenuModifierTreeModal = false
       this.selectedItem.sku = data.selectedSKUs
     },
     /**
-		 * To get a list of reward items for the current tier.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of reward items for the current tier.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getRewardItems () {
       this.loadingRewardItems = true
       this.rewardItems = []
@@ -596,7 +609,7 @@ export default {
           if (response.code === 200 && response.status === 'ok') {
             rewardItemsVue.loadingRewardItems = false
             rewardItemsVue.rewardItems =
-							response.payload.reward_item_all
+              response.payload.reward_item_all
           } else {
             rewardItemsVue.loadingRewardItems = false
           }
@@ -612,20 +625,20 @@ export default {
         })
     },
     /**
-		 * To show the modal for editing details of a reward item.
-		 * @function
-		 * @param {object} item - The selected reward item object.
-		 * @returns {undefined}
-		 */
+     * To show the modal for editing details of a reward item.
+     * @function
+     * @param {object} item - The selected reward item object.
+     * @returns {undefined}
+     */
     showEditRewardItemModal (item) {
       this.passedRewardItem = item
       this.displayEditRewardItemModal = true
     },
     /**
-		 * To check if the reward item data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the reward item data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateRewardItemData () {
       var rewardItemsVue = this
       return new Promise(function (resolve, reject) {
@@ -644,10 +657,10 @@ export default {
       })
     },
     /**
-		 * To add the new reward item to the current tier and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To add the new reward item to the current tier and close the modal.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     createNewRewardItem () {
       var rewardItemsVue = this
       rewardItemsVue.clearError('errorMessage')
@@ -666,12 +679,12 @@ export default {
             .then(response => {
               if (
                 response.code === 200 &&
-								response.status === 'ok'
+                response.status === 'ok'
               ) {
                 rewardItemsVue.newRewardItem.id =
-									response.payload.id
+                  response.payload.id
                 rewardItemsVue.newRewardItem.sku_array =
-									response.payload.sku_array
+                  response.payload.sku_array
                 rewardItemsVue.addRewardItem(
                   rewardItemsVue.newRewardItem
                 )
@@ -690,7 +703,7 @@ export default {
               ajaxErrorHandler({
                 reason,
                 errorText:
-									'We could not create the reward item',
+                  'We could not create the reward item',
                 errorName: 'errorMessage',
                 vue: rewardItemsVue
               })
@@ -711,12 +724,12 @@ export default {
         })
     },
     /**
-		 * To check if a location has been selected.
-		 * @function
-		 * @param {object} item - The item to assign to.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To check if a location has been selected.
+     * @function
+     * @param {object} item - The item to assign to.
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     checkForLocation (item, event) {
       event.preventDefault()
       if (this.$root.activeLocation && this.$root.activeLocation.id) {
@@ -726,25 +739,25 @@ export default {
       }
     },
     /**
-		 * To display a prompt to select a location.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To display a prompt to select a location.
+     * @function
+     * @returns {undefined}
+     */
     showLocationAlert () {
       this.$swal({
         title: 'No store',
         text:
-					'Please select a store from the stores panel on the right before selecting items',
+          'Please select a store from the stores panel on the right before selecting items',
         type: 'warning'
       })
     },
     /**
-		 * To show the menu-modifier tree modal to select items for reward SKUs.
-		 * @function
-		 * @param {object} item - The item to assign to.
-		 * @param {object} event - The event that triggered this action.
-		 * @returns {undefined}
-		 */
+     * To show the menu-modifier tree modal to select items for reward SKUs.
+     * @function
+     * @param {object} item - The item to assign to.
+     * @param {object} event - The event that triggered this action.
+     * @returns {undefined}
+     */
     displayMenuModifierTreeModal (item, event) {
       event.stopPropagation()
       this.selectedItem = { ...item }
@@ -752,10 +765,10 @@ export default {
       this.showMenuModifierTreeModal = true
     },
     /**
-		 * To clear the new reward item form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new reward item form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewRewardForm () {
       this.newRewardItem = {
         name: '',
@@ -768,20 +781,20 @@ export default {
       }
     },
     /**
-		 * To add the reward item to the items list.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To add the reward item to the items list.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     addRewardItem (val) {
       this.rewardItems.push(val)
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Reward Item has been created'
@@ -800,23 +813,23 @@ export default {
       })
     },
     /**
-		 * To update the image according to the emitted value.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To update the image according to the emitted value.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     updateRewardItemDetails ({ val, payload }) {
       this.getRewardItems()
       this.displayEditRewardItemModal = false
       this.showEditSuccess(payload)
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showEditSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Reward Item has been saved'
@@ -835,44 +848,44 @@ export default {
       })
     },
     /**
-		 * To close the modal for editing the detils of an image.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for editing the detils of an image.
+     * @function
+     * @returns {undefined}
+     */
     closeRewardItemModal () {
       this.displayEditRewardItemModal = false
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {string} errorName - Name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {string} errorName - Name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (errorName) {
       this[errorName] = ''
     },
     /**
-		 * To toggle the create menu panel, initially set to opened
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create menu panel, initially set to opened
+     * @function
+     * @returns {undefined}
+     */
     toggleCreateItemPanel () {
       this.createItemCollapse = !this.createItemCollapse
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @returns {undefined}
+     */
     clearDeleteError () {
       this.deleteErrorMessage = ''
     },
     /**
-		 * To show the modal for deleting a reward item.
-		 * @function
-		 * @param {object} item - The selected item object.
-		 * @returns {undefined}
-		 */
+     * To show the modal for deleting a reward item.
+     * @function
+     * @param {object} item - The selected item object.
+     * @returns {undefined}
+     */
     showDeleteModal (item) {
       this.itemToBeDeleted.reward_item_id = item.id
       this.itemToBeDeleted.name = item.name
@@ -881,10 +894,10 @@ export default {
       this.displayDeleteModal = true
     },
     /**
-		 * To delete a reward item in the API.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To delete a reward item in the API.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     deleteItem () {
       this.deleting = true
       var rewardsVue = this
@@ -918,12 +931,13 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmDelete (payload = {}) {
+      if (!payload) { payload = {} }
       let title = 'Success'
       let text = 'The Reward Item has been deleted'
       let type = 'success'
@@ -941,10 +955,10 @@ export default {
       })
     },
     /**
-		 * To clear the item delete form
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the item delete form
+     * @function
+     * @returns {undefined}
+     */
     resetItemToBeDeleted () {
       this.itemToBeDeleted = {
         reward_id: null,
@@ -953,10 +967,10 @@ export default {
       }
     },
     /**
-		 * To close the modal for deleting an item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for deleting an item.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteModal () {
       this.displayDeleteModal = false
     }
@@ -966,14 +980,14 @@ export default {
 
 <style scoped>
 .grey-label {
-	color: rgb(153, 153, 153);
+  color: rgb(153, 153, 153);
 }
 .side-by-side-item {
-	display: inline-block;
-	width: 49%;
+  display: inline-block;
+  width: 49%;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover,
 .mt-element-list .list-news.ext-2.mt-list-container ul > .mt-list-item:hover {
-	background-color: white;
+  background-color: white;
 }
 </style>
