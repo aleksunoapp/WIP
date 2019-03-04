@@ -136,7 +136,7 @@ export default {
       const statuses = {
         '6': 'red status light',
         '7': 'yellow status light',
-        '8': 'grey status light',
+        '8': 'green status light',
         '9': 'grey status light'
       }
       return statuses[service.category] || 'status indicator'
