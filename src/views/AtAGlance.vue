@@ -124,7 +124,7 @@ export default Vue.extend({
       'count'
     ]),
     totalCount () {
-      return this.count.concern + this.count.fail + this.count.warning
+      return this.count.actionable
     }
   },
   created () {

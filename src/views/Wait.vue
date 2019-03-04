@@ -42,7 +42,7 @@ export default Vue.extend({
       return this.getServices({
         isHighlighted: false,
         categories: ['1', '2', '5'] }
-      )
+      ).filter(service => service.category < '8')
     }
   },
   created () {

@@ -225,7 +225,8 @@ export const getters = {
     let warning = 0
     let approved = 0
     let pass = 0
-    let concern = 0
+    let actionableConcern = 0
+    let greenConcern = 0
 
     state.services.forEach((service) => {
       if (service.category === '1') {
@@ -254,14 +255,21 @@ export const getters = {
         }
       } else if (
         service.category === '6' ||
-        service.category === '7' ||
+        service.category === '7'
+      ) {
+        if (service.subServices) {
+          actionableConcern = actionableConcern + service.subServices.length
+        } else {
+          actionableConcern++
+        }
+      } else if (
         service.category === '8' ||
         service.category === '9'
       ) {
         if (service.subServices) {
-          concern = concern + service.subServices.length
+          greenConcern = greenConcern + service.subServices.length
         } else {
-          concern++
+          greenConcern++
         }
       }
     })
@@ -270,8 +278,8 @@ export const getters = {
       warning,
       approved,
       pass,
-      concern,
-      actionable: fail + warning + concern
+      concern: actionableConcern + greenConcern,
+      actionable: fail + warning + actionableConcern
     }
   },
   additionalServices: (state, getters) => {
@@ -283,6 +291,9 @@ export const getters = {
       }
     }
     return highlighted
+  },
+  actionableAdditionalServices: (state, getters) => {
+    return getters.additionalServices.filter(service => service.category < '8')
   },
   respondBy: (state) => {
     return state.deadlines.respondBy === null ? null : new Date(state.deadlines.respondBy)
