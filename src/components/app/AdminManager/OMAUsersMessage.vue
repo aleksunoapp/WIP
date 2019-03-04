@@ -123,10 +123,8 @@
         <p>
           Message will be sent to
           <a @click="showUserSelect()">
-            {{ message.user_alias.length }} user<span v-show="message.user_alias.length !== 1">
-              s
-            </span>
-          </a>.
+            {{ message.user_alias.length }} {{ message.user_alias.length === 1 ? 'user' : 'users' }}
+          </a>
         </p>
         <div class="form-group form-md-line-input form-md-floating-label">
           <label
