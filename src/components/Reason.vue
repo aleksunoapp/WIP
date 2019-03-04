@@ -29,7 +29,7 @@
                 :for="`reason${reason.id}`"
                 class="reason"
                 tabindex="0"
-                @click="close()"
+                @click.stop="close()"
                 @blur="loopFocus(reason.id)"
                 @keydown.enter="click(reason)"
               >
@@ -39,6 +39,7 @@
                   v-model="selected"
                   :value="reason.id"
                   type="radio"
+                  @click.stop
                 >
                 <div class="empty">
                   <div class="selected" />
@@ -91,10 +92,22 @@ export default Vue.extend({
   },
   methods: {
     close () {
-      setTimeout(() => {
-        this.closeReason()
-        this.closeService()
-      }, 300)
+      if (
+        (
+          this.$route.name === 'additional-services' ||
+          this.$route.name === 'wait-services'
+        ) && this.modal
+      ) {
+        this.$emit('next')
+        setTimeout(() => {
+          this.closeReason()
+        }, 300)
+      } else {
+        setTimeout(() => {
+          this.closeReason()
+          this.closeService()
+        }, 300)
+      }
     },
     click (reason) {
       this.$refs[`input${reason.id}`][0].click()

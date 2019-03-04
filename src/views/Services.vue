@@ -1,7 +1,7 @@
 <template>
   <div class="background">
-    <service />
-    <reason />
+    <service ref="service" />
+    <reason @next="next" />
     <desktop-navigation
       :categories="categoriesShownOnRoute"
       :display-total="displayTotal"
@@ -202,6 +202,9 @@ export default Vue.extend({
         this.getTax()
         this.$router.push({ name: 'additional-summary' })
       }
+    },
+    next () {
+      this.$refs.service.next()
     },
     ...mapMutations([
       'setService',

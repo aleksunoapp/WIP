@@ -140,6 +140,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { getTotal, focus, formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
+  name: 'ServicePopup',
   mixins: [getTotal, focus, formatCurrency],
   computed: {
     ...mapState([
@@ -291,7 +292,11 @@ export default Vue.extend({
     approve () {
       this.selectService()
       this.logEvent(`Selected service ${this.service.id}`)
-      this.closeService()
+      if (this.$route.name === 'additional-services' || this.$route.name === 'wait-services') {
+        this.next()
+      } else {
+        this.closeService()
+      }
     },
     reject () {
       this.unselectService()
