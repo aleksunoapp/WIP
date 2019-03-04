@@ -965,7 +965,7 @@ export default {
         .validatePromoCodeData()
         .then(response => {
           promoCodesVue.creating = true
-          let newPromoCode = promoCodesVue.newPromoCode
+          let newPromoCode = { ...promoCodesVue.newPromoCode }
           newPromoCode.codes = newPromoCode.codes.toUpperCase()
           newPromoCode.locations = newPromoCode.locations.toString()
           newPromoCode.sku = newPromoCode.sku.toString()
