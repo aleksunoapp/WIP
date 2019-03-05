@@ -454,6 +454,7 @@ export default Vue.extend({
             letter-spacing: 0.0625rem;
             font-family: 'Futura Heavy';
             background-color: var(--grey-light-background);
+            text-align: center;
           }
         }
         .badge {
