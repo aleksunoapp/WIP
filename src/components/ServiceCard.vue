@@ -128,7 +128,7 @@ export default {
       'logEvent'
     ]),
     openService (service) {
-      if (!this.isPass) {
+      if (service.category !== '3') {
         this.viewService(service)
       }
     },

@@ -168,7 +168,7 @@ export default Vue.extend({
           services = services.concat(this.categoryServicesShownOnRoute(category.id))
         }
       }
-      return services
+      return services.filter(service => service.category !== '3')
     },
     categoryColor () {
       if (this.service.category === '1') return 'red'
