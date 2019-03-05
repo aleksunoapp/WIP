@@ -97,21 +97,10 @@
               </div>
             </div>
             <div class="footer">
-              <nav class="navigation">
-                <button
-                  class="back"
-                  @click="back()"
-                >
-                  {{ $t("back") }}
-                </button>
-                <button
-                  class="next"
-                  @click="next()"
-                >
-                  {{ $t("next") }}
-                </button>
-              </nav>
-              <div class="buttons">
+              <div
+                v-if="service.category < '8'"
+                class="buttons"
+              >
                 <button
                   class="button cta green"
                   @click="approve()"
@@ -126,6 +115,20 @@
                   {{ $t("not_today") }}
                 </button>
               </div>
+              <nav class="navigation">
+                <button
+                  class="back"
+                  @click="back()"
+                >
+                  {{ $t("back") }}
+                </button>
+                <button
+                  class="next"
+                  @click="next()"
+                >
+                  {{ $t("next") }}
+                </button>
+              </nav>
             </div>
           </div>
         </transition>
@@ -500,6 +503,7 @@ export default Vue.extend({
         padding: 0 2rem;
         border-top: 1px solid var(--grey-light-background);
         @media (min-height: 768px) {
+          margin-top: 1rem;
           padding: 1rem 2rem;
           border-bottom: 1px solid var(--grey-light-background);
         }
@@ -520,9 +524,6 @@ export default Vue.extend({
       }
       .buttons {
         margin: 0 2rem;
-        @media (min-height: 768px) {
-          margin: 0 2rem 2rem 2rem;
-        }
         .button {
           margin: 0;
           @media (min-height: 768px) {
