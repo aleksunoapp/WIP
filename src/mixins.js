@@ -25,7 +25,7 @@ export const getServiceDisplayPrice = {
         category.serviceCategoryType.toLowerCase() === 'pass'
       ) {
         return false
-      } else if (service.category === '8') {
+      } else if (service.category > '7') {
         return false
       } else if (service.category > '5' && !service.parentServiceId) {
         return false
@@ -57,7 +57,7 @@ export const getTotal = {
             category.serviceCategoryType.toLowerCase() === 'pass'
           ) {
             total += 0
-          } else if (service.category === '8') {
+          } else if (service.category > '7') {
             total += 0
           } else if (service.category > '5' && !service.parentServiceId) {
             total += 0
