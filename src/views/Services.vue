@@ -192,6 +192,7 @@ export default Vue.extend({
         }
         this.$router.push({ name: 'summary' })
       } else if (this.$route.name === 'wait-services') {
+        this.getTax()
         this.$router.push({ name: 'additional-summary' })
       } else if (this.getServices({
         isHighlighted: false,
