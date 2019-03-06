@@ -43,8 +43,11 @@
                   <p class="name">
                     {{ service.name }}
                   </p>
-                  <p class="price">
-                    {{ price }}
+                  <p
+                    v-if="getServiceDisplayPrice(service)"
+                    class="price"
+                  >
+                    {{ getServiceDisplayPrice(service) }}
                   </p>
                   <div
                     v-if="service.isHighlighted"
@@ -140,11 +143,11 @@
 <script>
 import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { getTotal, focus, formatCurrency } from '@/mixins.js'
+import { getServiceDisplayPrice, getTotal, focus, formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   name: 'ServicePopup',
-  mixins: [getTotal, focus, formatCurrency],
+  mixins: [getServiceDisplayPrice, getTotal, focus, formatCurrency],
   computed: {
     ...mapState([
       'modal',
@@ -199,17 +202,6 @@ export default Vue.extend({
         total = this.formatCurrency(this.total.inspection)
       }
       return total
-    },
-    price () {
-      if (this.service.price === 0 && this.service.laborMatrixPayment) {
-        if (this.service.laborMatrixPayment !== 'NA' && this.service.laborMatrixPayment !== 'None') {
-          return this.service.laborMatrixPaymentTranslations
-        } else {
-          return this.formatCurrency(this.service.price)
-        }
-      } else {
-        return this.formatCurrency(this.service.price)
-      }
     },
     warranty () {
       let text = ''
