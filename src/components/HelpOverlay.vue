@@ -246,9 +246,9 @@
                 </p>
               </div>
               <div class="divider" />
-              <div class="row total">
+              <div class="row total bold">
                 <p class="item">
-                  {{ $t("total_on_delivery") }}
+                  {{ $t("total_cost") }}
                 </p>
                 <p class="price">
                   {{ total }}
@@ -1066,9 +1066,6 @@ export default Vue.extend({
           display: block;
           text-transform: uppercase;
           font-size: 0.7em;
-        }
-        &.total {
-          color: var(--blue);
         }
         .price {
           min-width: 100px;

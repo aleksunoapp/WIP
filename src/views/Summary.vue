@@ -12,6 +12,12 @@
           <div class="previous">
             <p class="item">
               {{ $t("previously_approved_services") }}
+              <span
+                v-if="$route.name === 'additional-summary'"
+                class="bold"
+              >
+                ({{ categoryServices('4').length }})
+              </span>
               <span class="taxes">
                 {{ $t("taxes_and_fees_included") }}
               </span>
@@ -55,26 +61,66 @@
           v-if="categoryServices('4').length"
           class="divider"
         />
-        <div class="row bold">
-          <p class="item">
-            {{ $t("estimate") }}
-          </p>
-          <p class="price">
-            {{ displayTotal }}
-          </p>
-        </div>
-        <div class="row">
-          <p class="item">
-            {{ $t("additional_taxes_and_fees") }}
-          </p>
-          <p class="price">
-            {{ tax }}
-          </p>
-        </div>
+        <template v-if="$route.name === 'summary'">
+          <div class="row bold">
+            <p class="item">
+              {{ $t("estimate") }}
+            </p>
+            <p class="price">
+              {{ displayTotal }}
+            </p>
+          </div>
+          <div
+            class="row"
+          >
+            <p class="item">
+              {{ $t("additional_taxes_and_fees") }}
+            </p>
+            <p class="price">
+              {{ tax }}
+            </p>
+          </div>
+        </template>
+        <template v-if="$route.name === 'additional-summary'">
+          <div
+            class="row"
+          >
+            <p class="item">
+              {{ $t("new_services") }}
+              <span
+                class="bold"
+              >
+                ({{ additionalApproved.count }})
+              </span>
+            </p>
+            <p class="price">
+              {{ additionalApproved.preTaxTotal }}
+            </p>
+          </div>
+          <div class="divider" />
+          <div
+            class="row indented"
+          >
+            <p class="item">
+              {{ $t("additional_taxes_and_fees") }}
+            </p>
+            <p class="price">
+              {{ tax }}
+            </p>
+          </div>
+          <div class="row bold indented pretax">
+            <p class="item">
+              {{ $t("total") }}
+            </p>
+            <p class="price">
+              {{ additionalApproved.preTaxTotal }}
+            </p>
+          </div>
+        </template>
         <div class="divider" />
-        <div class="row total">
+        <div class="row total bold">
           <p class="item">
-            {{ $t("total_on_delivery") }}
+            {{ $route.name === 'summary' ? $t("total_cost") : $t("total_updated_cost") }}
           </p>
           <p class="price">
             {{ total }}
@@ -89,7 +135,7 @@
         v-if="count.actionable"
         class="signature"
       >
-        <div class="row">
+        <div class="legend">
           <p class="prompt">
             {{ $t("please_sign_below") }}
           </p>
@@ -226,6 +272,20 @@ export default Vue.extend({
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
+    },
+    additionalApproved () {
+      let services = this.getServices({
+        categories: ['1', '2', '5'],
+        isSelected: true
+      }).filter(service => this.getServiceDisplayPrice(service) !== false)
+      let total = this.getTotal(services)
+
+      return {
+        count: services.length,
+        total: this.formatCurrency(total + this.$store.state.tax),
+        preTaxTotal: this.formatCurrency(total),
+        services
+      }
     },
     displayTotal () {
       let total = ''
@@ -375,8 +435,23 @@ export default Vue.extend({
         display: flex;
         justify-content: space-between;
         align-items: center;
-        &.total {
-          color: var(--blue);
+        &.indented {
+          padding-left: 3rem;
+          .item {
+            margin: 0.5rem 0;
+          }
+        }
+        &.pretax {
+          .price {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 0;
+            color: var(--blue);
+            font-weight: 700;
+            letter-spacing: 0.0625rem;
+            font-family: 'Futura Heavy';
+          }
         }
         .previous {
           display: flex;
@@ -440,8 +515,9 @@ export default Vue.extend({
       @media (min-width: 992px) {
         padding: 0;
       }
-      .row {
+      .legend {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         @media (min-width: 992px) {
           background-color: var(--grey-light-background);
