@@ -125,14 +125,34 @@ export const actions = {
           .then((responses) => {
             const [servicesResponse, inspectionReportUrlResponse, advisor] = responses
 
+            let additional = false
             const parentServices = []
             for (const service of servicesResponse) {
+              if (service.isHighlighted) {
+                additional = true
+              }
               if (!service.parentServiceId) {
                 if (!parentServices.some((duplicate) => duplicate.id === service.id)) {
                   parentServices.push(service)
                 }
               }
             }
+
+            if (additional) {
+              for (const service of servicesResponse) {
+                if (!service.isHighlighted) {
+                  if (
+                    service.category === '1' ||
+                    service.category === '2' ||
+                    service.category === '6' ||
+                    service.category === '7'
+                  ) {
+                    service.isSelected = false
+                  }
+                }
+              }
+            }
+
             for (const parentService of parentServices) {
               const subServices = servicesResponse
                 .filter((subService) => subService.parentServiceId === parentService.id)
