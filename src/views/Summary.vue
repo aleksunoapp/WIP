@@ -196,6 +196,7 @@
             {{ $t("i_acknowledge") }} <router-link
               :to="{name: 'terms-and-conditions'}"
               class="link"
+              @click.stop
             >
               {{ $t("terms_and_conditions") }}.
             </router-link>
