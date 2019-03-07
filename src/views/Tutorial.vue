@@ -67,6 +67,7 @@
         </span>
       </transition>
       <pagination
+        class="pagination"
         :total="3"
         :current="page"
         @page="showPage"
@@ -84,7 +85,7 @@
         <button
           v-if="page !== 3"
           class="button skip"
-          @click="$router.push({name: 'at-a-glance'})"
+          @click="$router.go(-1)"
         >
           {{ $t("skip") }}
         </button>
@@ -158,6 +159,9 @@ export default Vue.extend({
   .sub-header {
     font-weight: bold;
     font-size: 1.5rem;
+  }
+  .pagination {
+    margin-bottom: 1rem;
   }
   .description {
     min-height: 4rem;;
