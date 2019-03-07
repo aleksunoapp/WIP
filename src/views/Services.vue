@@ -197,7 +197,7 @@ export default Vue.extend({
       } else if (this.getServices({
         isHighlighted: false,
         categories: ['1', '2', '5']
-      }).filter(service => service.category > '7').length) {
+      }).filter(service => service.category < '7').length) {
         this.$router.push({ name: 'wait' })
       } else {
         this.getTax()
