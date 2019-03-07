@@ -8,6 +8,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --fix",
     "test:e2e": "vue-cli-service test:e2e",
+    "cypress:run": "./node_modules/.bin/cypress run",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
