@@ -124,7 +124,9 @@ export const mutations = {
     state.advisor = advisor
   },
   setTax (state, tax) {
-    state.tax = tax
+    if (typeof tax === 'number') {
+      state.tax = tax
+    }
   },
   setError (state, error) {
     state.error = error
