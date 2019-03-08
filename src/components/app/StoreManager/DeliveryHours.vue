@@ -398,42 +398,42 @@ export default {
   },
   methods: {
     /**
-		 * To toggle the create panel
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create panel
+     * @function
+     * @returns {undefined}
+     */
     toggleCreatePanel () {
       this.createNewCollapse = !this.createNewCollapse
     },
     /**
-		 * To copy the time to other days.
-		 * @function
-		 * @param {string} time - The time to copy
-		 * @param {array} days - The array of days to update
-		 * @returns {undefined}
-		 */
+     * To copy the time to other days.
+     * @function
+     * @param {string} time - The time to copy
+     * @param {array} days - The array of days to update
+     * @returns {undefined}
+     */
     applyOpeningTimeToAll (time, days) {
       days.forEach(day => {
         day.open_time = time
       })
     },
     /**
-		 * To copy the time to other days.
-		 * @function
-		 * @param {string} time - The time to copy
-		 * @param {array} days - The array of days to update
-		 * @returns {undefined}
-		 */
+     * To copy the time to other days.
+     * @function
+     * @param {string} time - The time to copy
+     * @param {array} days - The array of days to update
+     * @returns {undefined}
+     */
     applyClosingTimeToAll (time, days) {
       days.forEach(day => {
         day.close_time = time
       })
     },
     /**
-		 * To fetch delivery hours
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To fetch delivery hours
+     * @function
+     * @returns {undefined}
+     */
     getDeliveryHours () {
       this.loading = true
       const _this = this
@@ -444,7 +444,6 @@ export default {
         .then(response => {
           if (response.payload.length) {
             let days = _this.reorderDays(response.payload)
-            days = _this.reorderDays(response.payload)
             days = _this.reformatDays(days)
             _this.deliveryHours = days
           }
@@ -462,13 +461,25 @@ export default {
         })
     },
     /**
-		 * To order weekdays from Monday to Sunday
-		 * @function
-		 * @param {array} days - Array of days to reorder
-		 * @returns {undefined}
-		 */
+     * To order weekdays from Monday to Sunday
+     * @function
+     * @param {array} days - Array of days to reorder
+     * @returns {undefined}
+     */
     reorderDays (days) {
-      days.sort((a, b) => a.day > b.day)
+      days.sort((a, b) => {
+        if (
+          a.day > b.day
+        ) {
+          return 1
+        } else if (
+          a.day < b.day
+        ) {
+          return -1
+        } else {
+          return 0
+        }
+      })
       const sundayIndex = days.findIndex(day => day.day === 0)
       if (sundayIndex !== -1) {
         const sunday = days[sundayIndex]
@@ -478,11 +489,11 @@ export default {
       return days
     },
     /**
-		 * To trim time strings and add loading booleans
-		 * @function
-		 * @param {array} days - Array of days to reformat
-		 * @returns {undefined}
-		 */
+     * To trim time strings and add loading booleans
+     * @function
+     * @param {array} days - Array of days to reformat
+     * @returns {undefined}
+     */
     reformatDays (days) {
       return days.map(day => {
         return {
@@ -495,10 +506,10 @@ export default {
       })
     },
     /**
-		 * To validate hours before submitting to API
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To validate hours before submitting to API
+     * @function
+     * @returns {undefined}
+     */
     validateNew () {
       const _this = this
       return new Promise(function (resolve, reject) {
@@ -513,10 +524,10 @@ export default {
       })
     },
     /**
-		 * To create delivery hours
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To create delivery hours
+     * @function
+     * @returns {undefined}
+     */
     createDeliveryHours () {
       const _this = this
       this.clearError('createErrorMessage')
@@ -539,7 +550,7 @@ export default {
               ajaxErrorHandler({
                 reason,
                 errorText:
-									'We could not add the delivery hours',
+                  'We could not add the delivery hours',
                 errorName: 'createErrorMessage',
                 vue: _this
               })
@@ -553,11 +564,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Hours have been created'
@@ -576,11 +587,11 @@ export default {
       })
     },
     /**
-		 * To validate hours before submitting to API
-		 * @function
-		 * @param {object} day - The day to validate
-		 * @returns {undefined}
-		 */
+     * To validate hours before submitting to API
+     * @function
+     * @param {object} day - The day to validate
+     * @returns {undefined}
+     */
     validateEdited (day) {
       return new Promise(function (resolve, reject) {
         if (!day.open_time.length) {
@@ -594,11 +605,11 @@ export default {
       })
     },
     /**
-		 * To update delivery hours
-		 * @function
-		 * @param {object} day - Day to update
-		 * @returns {undefined}
-		 */
+     * To update delivery hours
+     * @function
+     * @param {object} day - Day to update
+     * @returns {undefined}
+     */
     updateDeliveryHours (day) {
       const _this = this
       this.validateEdited(day)
@@ -626,7 +637,7 @@ export default {
               ajaxErrorHandler({
                 reason,
                 errorText:
-									'We could not update the delivery hours',
+                  'We could not update the delivery hours',
                 errorName: 'errorMessage',
                 vue: _this
               })
@@ -640,11 +651,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showUpdateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Hours have been updated'
@@ -663,20 +674,20 @@ export default {
       })
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {object} errorMessageName - The error message to be cleared.
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {object} errorMessageName - The error message to be cleared.
+     * @returns {undefined}
+     */
     clearError (errorMessageName) {
       this[errorMessageName] = ''
     },
     /**
-		 * To delete delivery hours
-		 * @function
-		 * @param {object} day - Day to delete
-		 * @returns {undefined}
-		 */
+     * To delete delivery hours
+     * @function
+     * @param {object} day - Day to delete
+     * @returns {undefined}
+     */
     deleteDeliveryHours (day) {
       const _this = this
       day.deleting = true
@@ -702,11 +713,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showDeleteSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Hours have been deleted'
@@ -729,9 +740,9 @@ export default {
 </script>
 <style scoped>
 .el-date-editor.el-input.narrow-picker {
-	width: 150px;
+  width: 150px;
 }
 .align-middle {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 </style>
