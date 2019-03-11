@@ -43,24 +43,12 @@
                   <p class="name">
                     {{ service.name }}
                   </p>
-                  <div class="wrapper">
-                    <div
-                      v-show="service.isSelected"
-                      class="box"
-                    >
-                      <img
-                        src="@/assets/images/green-check.svg"
-                        alt="green checkmark - service is selected"
-                        class="check"
-                      >
-                    </div>
-                    <p
-                      v-if="getServiceDisplayPrice(service)"
-                      class="price"
-                    >
-                      {{ getServiceDisplayPrice(service) }}
-                    </p>
-                  </div>
+                  <p
+                    v-if="getServiceDisplayPrice(service)"
+                    class="price"
+                  >
+                    {{ getServiceDisplayPrice(service) }}
+                  </p>
                   <div
                     v-if="service.isHighlighted"
                     class="badge"
@@ -117,7 +105,8 @@
                 class="buttons"
               >
                 <button
-                  class="button cta green"
+                  class="button cta"
+                  :class="approveButtonColor"
                   @click="approve()"
                 >
                   {{ $t("approve") }}
@@ -261,6 +250,15 @@ export default Vue.extend({
         advisor,
         divider
       }
+    },
+    approveButtonColor () {
+      let className = 'green'
+      if (this.additionalServices.length) {
+        if (!this.service.isSelected) {
+          className = 'white'
+        }
+      }
+      return className
     }
   },
   watch: {
@@ -449,35 +447,16 @@ export default Vue.extend({
             margin: 0;
             padding: 1rem;
           }
-          .wrapper {
-            display: flex;
-            align-items: center;
-            .box {
-              display: inline-flex;
-              justify-content: center;
-              align-items: center;
-              width: 2.5rem;
-              height: 2.5rem;
-              margin: 0 1rem;
-              border-radius: 3px;
-              .check {
-                max-height: 100%;
-                max-width: 100%;
-                padding: 0.3rem;
-              }
-            }
-            .price {
-              display: inline-block;
-              margin: 0;
-              padding: 1rem;
-              border-radius: 500px;
-              color: var(--blue);
-              font-weight: 700;
-              letter-spacing: 0.0625rem;
-              font-family: 'Futura Heavy';
-              background-color: var(--grey-light-background);
-              text-align: center;
-            }
+          .price {
+            margin: 0;
+            padding: 1rem;
+            border-radius: 500px;
+            color: var(--blue);
+            font-weight: 700;
+            letter-spacing: 0.0625rem;
+            font-family: 'Futura Heavy';
+            background-color: var(--grey-light-background);
+            text-align: center;
           }
         }
         .badge {
@@ -552,6 +531,13 @@ export default Vue.extend({
           margin: 0;
           @media (min-height: 768px) {
             margin: 1rem 0;
+          }
+          &.white {
+            font-weight: 400;
+            font-family: 'Futura Book';
+            color: var(--grey-dark-background);
+            background-color: var(--white);
+            box-shadow: none;
           }
           &.skip {
             margin: .5rem 0 0 0;
