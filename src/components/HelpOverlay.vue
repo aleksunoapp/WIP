@@ -31,21 +31,21 @@
                     <span
                       class="count"
                       :class="{
-                        'red' : categoriesShownOnRoute[0].id === '1',
-                        'yellow' : categoriesShownOnRoute[0].id === '2',
-                        'green' : categoriesShownOnRoute[0].id === '3',
-                        'grey' : categoriesShownOnRoute[0].id === '5',
+                        'red' : firstCategory.id === '1',
+                        'yellow' : firstCategory.id === '2',
+                        'green' : firstCategory.id === '3',
+                        'grey' : firstCategory.id === '5',
                       }"
                     >
-                      {{ categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length }}
+                      {{ categoryServicesShownOnRoute(firstCategory.id).length }}
                     </span>
                     <span class="name">
-                      {{ categoriesShownOnRoute[0].name }}
+                      {{ firstCategory.name }}
                     </span>
                   </div>
                   <div class="right">
                     <span
-                      v-if="categoryContainsHiglightedServices(categoriesShownOnRoute[0].id)"
+                      v-if="categoryContainsHiglightedServices(firstCategory.id)"
                       class="badge"
                     >
                       {{ $t("updated") }}
@@ -75,28 +75,27 @@
               <div
                 class="header"
                 :class="{
-                  'red' : categoriesShownOnRoute[0].id === '1',
-                  'green' : categoriesShownOnRoute[0].id === '2',
-                  'yellow' : categoriesShownOnRoute[0].id === '3',
-                  'grey' : categoriesShownOnRoute[0].id === '5',
+                  'red' : firstCategory.id === '1',
+                  'green' : firstCategory.id === '2',
+                  'yellow' : firstCategory.id === '3',
+                  'grey' : firstCategory.id === '5',
                 }"
                 :style="`width: ${category.style.width}px;`"
-                @click="categoriesShownOnRoute[0].defaultExpended = !categoriesShownOnRoute[0].defaultExpended"
               >
                 <div class="left">
                   <span
                     class="count"
                     :class="{
-                      'red' : categoriesShownOnRoute[0].id === '1',
-                      'green' : categoriesShownOnRoute[0].id === '2',
-                      'yellow' : categoriesShownOnRoute[0].id === '3',
-                      'grey' : categoriesShownOnRoute[0].id === '5',
+                      'red' : firstCategory.id === '1',
+                      'green' : firstCategory.id === '2',
+                      'yellow' : firstCategory.id === '3',
+                      'grey' : firstCategory.id === '5',
                     }"
                   >
-                    {{ categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length }}
+                    {{ categoryServicesShownOnRoute(firstCategory.id).length }}
                   </span>
                   <div class="name">
-                    {{ categoriesShownOnRoute[0].name }}
+                    {{ firstCategory.name }}
                   </div>
                 </div>
                 <button
@@ -406,11 +405,14 @@ export default Vue.extend({
       'reason'
     ]),
     ...mapGetters([
-      'categoriesShownOnRoute',
+      'categoriesShown',
       'categoryServicesShownOnRoute',
       'categoryContainsHiglightedServices',
       'count'
     ]),
+    firstCategory () {
+      return this.categoriesShown[0] || {}
+    },
     buttonText () {
       return this.page < 5 ? this.$t('next') : this.$t('got_it')
     },
@@ -622,7 +624,7 @@ export default Vue.extend({
       if (page === 3) {
         let service
         // find first service with image
-        for (const category of this.categoriesShownOnRoute) {
+        for (const category of this.categoriesShown) {
           if (category.id < '5') {
             if (typeof category.serviceCategoryType === 'string') {
               if (category.serviceCategoryType.toLowerCase() !== 'pass') {
@@ -746,6 +748,7 @@ export default Vue.extend({
             box-shadow: var(--shadow);
           }
           .name {
+            padding: 0.5rem;
             text-transform: uppercase;
           }
         }

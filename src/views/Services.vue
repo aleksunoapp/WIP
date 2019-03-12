@@ -3,7 +3,7 @@
     <service ref="service" />
     <reason @next="next" />
     <desktop-navigation
-      :categories="categoriesShownOnRoute"
+      :categories="categoriesShown"
       :display-total="displayTotal"
       :count-total="countTotal"
       @scroll="scrollToCategory"
@@ -31,7 +31,7 @@
           class="wrapper"
         >
           <section
-            v-for="category in categoriesShownOnRoute"
+            v-for="category in categoriesShown"
             :ref="`category${category.id}`"
             :key="category.id"
             class="category"
@@ -133,7 +133,7 @@ export default Vue.extend({
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] })) + this.getTotal(this.additionalServices))
+        total = this.formatCurrency(this.getTotal(this.deferredServices) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
@@ -144,7 +144,7 @@ export default Vue.extend({
       if (this.$route.name === 'additional-services') {
         total = this.additionalServices.length
       } else if (this.$route.name === 'wait-services') {
-        total = this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }).length
+        total = this.deferredServices.length
       } else if (this.$route.name === 'services') {
         total = this.count.concern + this.count.fail + this.count.warning
       }
@@ -153,9 +153,9 @@ export default Vue.extend({
     ...mapGetters([
       'additionalServices',
       'categoryServicesShownOnRoute',
-      'categoriesShownOnRoute',
+      'categoriesShown',
       'count',
-      'getServices',
+      'deferredServices',
       'total'
     ])
   },
@@ -194,10 +194,7 @@ export default Vue.extend({
       } else if (this.$route.name === 'wait-services') {
         this.getTax()
         this.$router.push({ name: 'additional-summary' })
-      } else if (this.getServices({
-        isHighlighted: false,
-        categories: ['1', '2', '5']
-      }).filter(service => service.category < '7').length) {
+      } else if (this.deferredServices.length) {
         this.$router.push({ name: 'wait' })
       } else {
         this.getTax()

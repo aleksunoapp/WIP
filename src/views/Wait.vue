@@ -14,8 +14,8 @@
           </p>
           <p class="text large">
             <span class="green">
-              {{ services.length }}
-            </span> {{ $tc("recommendations", services.length) }}
+              {{ deferredServices.length }}
+            </span> {{ $tc("recommendations", deferredServices.length) }}
           </p>
           <p class="text">
             {{ $t('pending_approval') }}
@@ -24,9 +24,9 @@
       </div>
       <button
         class="button cta green"
-        @click="viewUnapproved()"
+        @click="viewDeferred()"
       >
-        {{ $tc("view_recommendations", services.length) }}
+        {{ $tc("view_recommendations", deferredServices.length) }}
       </button>
     </main>
   </div>
@@ -37,13 +37,7 @@ import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default Vue.extend({
   computed: {
-    ...mapGetters(['getServices']),
-    services () {
-      return this.getServices({
-        isHighlighted: false,
-        categories: ['1', '2', '5'] }
-      ).filter(service => service.category < '8')
-    }
+    ...mapGetters(['deferredServices'])
   },
   created () {
     this.logEvent('Started viewing wait page')
@@ -52,8 +46,8 @@ export default Vue.extend({
     this.logEvent('Finished viewing wait page')
   },
   methods: {
-    viewUnapproved () {
-      this.viewService(this.services[0])
+    viewDeferred () {
+      this.viewService(this.deferredServices[0])
       this.$router.push({ name: 'wait-services' })
     },
     ...mapMutations([

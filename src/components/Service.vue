@@ -157,17 +157,17 @@ export default Vue.extend({
     ]),
     ...mapGetters([
       'serviceById',
-      'categoriesShownOnRoute',
+      'categoriesShown',
       'categoryServicesShownOnRoute',
       'count',
       'isPass',
-      'getServices',
+      'deferredServices',
       'additionalServices',
       'total'
     ]),
     services () {
       let services = []
-      for (const category of this.categoriesShownOnRoute) {
+      for (const category of this.categoriesShown) {
         if (!this.isPass(category.id)) {
           services = services.concat(this.categoryServicesShownOnRoute(category.id))
         }
@@ -192,13 +192,7 @@ export default Vue.extend({
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(
-          this.getTotal(
-            this.getServices({
-              isHighlighted: false,
-              categories: ['1', '2', '5']
-            })
-          ) + this.getTotal(this.additionalServices))
+        total = this.formatCurrency(this.getTotal(this.deferredServices) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
@@ -324,7 +318,7 @@ export default Vue.extend({
         }
         if (this.$route.name === 'additional-services') {
           if (this.count.actionable) {
-            if (this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }).length) {
+            if (this.deferredServices.length) {
               this.$router.push({ name: 'wait' })
             } else {
               this.getTax()

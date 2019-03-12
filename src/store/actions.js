@@ -85,9 +85,44 @@ export const actions = {
         commit('setLoading', { key: 'getMetadata', loading: false })
       })
   },
-  async getTax ({ commit, dispatch }) {
+  async getTaxForService ({ commit, dispatch }, service) {
     commit('setLoading', { key: 'getTax', loading: true })
-    await fetchTax()
+    await fetchTax([service.id])
+      .then((response) => {
+        commit('setServiceTax', {
+          service,
+          tax: response.taxAndFee
+        })
+      })
+      .catch((error) => {
+        error.message = i18n.t('we_couldnt_get_tax')
+        dispatch('handleError', error)
+      })
+      .finally(() => {
+        commit('setLoading', { key: 'getTax', loading: false })
+      })
+  },
+  async getTax ({ commit, dispatch, getters, state }) {
+    let selectedServiceIds = []
+    state.services.forEach((service) => {
+      if (service.category !== '3' && service.category !== '4') {
+        if (service.subServices) {
+          service.subServices.forEach((subService) => {
+            if (subService.isSelected) {
+              selectedServiceIds.push(subService.id)
+            }
+          })
+        } else {
+          if (service.isSelected) {
+            selectedServiceIds.push(service.id)
+          }
+        }
+      }
+    })
+    const previouslyApprovedServiceIds = getters.previouslyApprovedServices.map(service => service.id)
+    selectedServiceIds = selectedServiceIds.filter(id => !previouslyApprovedServiceIds.includes(id))
+    commit('setLoading', { key: 'getTax', loading: true })
+    await fetchTax(selectedServiceIds)
       .then((response) => {
         commit('setTax', response.taxAndFee)
       })
@@ -127,7 +162,14 @@ export const actions = {
 
             let additional = false
             const parentServices = []
+
             for (const service of servicesResponse) {
+              service.tax = 0
+              if (typeof service.declinedReasonId === 'number' && service.declinedReasonId > -1) {
+                service.deferred = true
+              } else {
+                service.deferred = false
+              }
               if (service.isHighlighted) {
                 additional = true
               }
@@ -140,7 +182,7 @@ export const actions = {
 
             if (additional) {
               for (const service of servicesResponse) {
-                if (!service.isHighlighted) {
+                if (service.deferred) {
                   if (
                     service.category === '1' ||
                     service.category === '2' ||
@@ -165,6 +207,11 @@ export const actions = {
             commit('setAdvisor', advisor)
             commit('setInspectionReportUrl', inspectionReportUrlResponse.fullInspectionUrl)
             dispatch('routeAfterLogin')
+
+            // in additional flow
+            if (additional) {
+              dispatch('getTaxesForServicesFromFirstLink')
+            }
           })
       })
       .catch((error) => {
@@ -172,7 +219,19 @@ export const actions = {
         commit('setLoading', { key: 'logIn', loading: false })
       })
   },
-  sendLog ({ commit, dispatch }) {
+  async getTaxesForServicesFromFirstLink ({ dispatch, getters }) {
+    // if these calls are made immediately, they returns a 403 CORS 'Missing Authentication Token'
+    const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount))
+    await wait(3000)
+    // get tax for services approved in the first link
+    for (const previous of getters.previouslyApprovedServices) {
+      // but not category 4, because that's pre-first link (when checking into dealership)
+      if (previous.category !== '4') {
+        await dispatch('getTaxForService', previous)
+      }
+    }
+  },
+  sendLog () {
     postLog()
       .catch((error) => {
         console.log({ error })
@@ -195,7 +254,7 @@ export const actions = {
     router.push({ name: 'thanks' })
     commit('setExpired', true)
   },
-  routeAfterLogin ({ commit, getters, state }) {
+  routeAfterLogin ({ commit, getters }) {
     if (getters.additionalServices.length) {
       router.push({ name: 'additional' })
     } else {

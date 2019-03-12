@@ -16,7 +16,7 @@
                 v-if="$route.name === 'additional-summary'"
                 class="bold"
               >
-                ({{ categoryServices('4').length }})
+                ({{ previouslyApprovedServices.length }})
               </span>
               <span class="taxes">
                 {{ $t("taxes_and_fees_included") }}
@@ -35,7 +35,7 @@
             </button>
           </div>
           <p class="price">
-            {{ serviceTotal }}
+            {{ previousTotal }}
           </p>
         </div>
         <transition-height>
@@ -44,21 +44,24 @@
             class="list"
           >
             <div
-              v-for="service in categoryServices('4')"
+              v-for="service in previouslyApprovedServices"
               :key="service.id"
               class="row"
             >
               <p class="item">
                 {{ service.name }}
               </p>
-              <p class="price">
+              <p
+                v-if="getServiceDisplayPrice(service)"
+                class="price"
+              >
                 {{ getServiceDisplayPrice(service) }}
               </p>
             </div>
           </div>
         </transition-height>
         <div
-          v-if="categoryServices('4').length"
+          v-if="previouslyApprovedServices.length"
           class="divider"
         />
         <template v-if="$route.name === 'summary'">
@@ -90,11 +93,11 @@
               <span
                 class="bold"
               >
-                ({{ additionalApproved.count }})
+                ({{ newlyApproved.count }})
               </span>
             </p>
             <p class="price">
-              {{ additionalApproved.preTaxTotal }}
+              {{ newlyApproved.preTaxTotal }}
             </p>
           </div>
           <div class="divider" />
@@ -113,7 +116,7 @@
               {{ $t("total") }}
             </p>
             <p class="price">
-              {{ additionalApproved.preTaxTotal }}
+              {{ newlyApproved.total }}
             </p>
           </div>
         </template>
@@ -269,16 +272,18 @@ export default Vue.extend({
       'count',
       'categoryServices',
       'additionalServices',
-      'getServices'
+      'deferredServices',
+      'previouslyApprovedServices'
     ]),
-    serviceTotal () {
-      return this.formatCurrency(this.$store.getters.total.service)
+    previousTotal () {
+      return this.formatCurrency(this.getTotal(this.previouslyApprovedServices))
     },
-    additionalApproved () {
-      let services = this.getServices({
-        categories: ['1', '2', '5'],
-        isSelected: true
-      }).filter(service => this.getServiceDisplayPrice(service) !== false)
+    newlyApproved () {
+      let services = [
+        ...this.additionalServices,
+        ...this.deferredServices
+      ]
+        .filter(service => service.isSelected && this.getServiceDisplayPrice(service) !== false)
       let total = this.getTotal(services)
 
       return {
@@ -295,7 +300,7 @@ export default Vue.extend({
       }
       if (this.$route.name === 'additional-summary') {
         let subsum = 0
-        subsum += this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }))
+        subsum += this.getTotal(this.deferredServices)
         subsum += this.getTotal(this.additionalServices)
         total = this.formatCurrency(subsum)
       }
@@ -310,11 +315,7 @@ export default Vue.extend({
         total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
       }
       if (this.$route.name === 'additional-summary') {
-        let subsum = 0
-        subsum += this.getTotal(this.getServices({ isHighlighted: false, categories: ['1', '2', '5'] }))
-        subsum += this.getTotal(this.additionalServices)
-
-        total = this.formatCurrency(this.$store.getters.total.service + subsum + this.$store.state.tax)
+        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
       }
       return total
     }

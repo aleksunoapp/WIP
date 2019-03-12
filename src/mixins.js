@@ -31,14 +31,14 @@ export const getServiceDisplayPrice = {
         return false
       } else if (service.price === 0 && service.laborMatrixPayment) {
         if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
-          return this.formatCurrency(service.price)
+          return this.formatCurrency(service.price + service.tax)
         } else {
           return service.laborMatrixPaymentTranslations || ''
         }
       } else if (service.price === 0) {
         return this.$t('free')
       } else {
-        return this.formatCurrency(service.price)
+        return this.formatCurrency(service.price + service.tax)
       }
     }
   }
@@ -63,13 +63,15 @@ export const getTotal = {
             total += 0
           } else if (service.price === 0 && service.laborMatrixPayment) {
             if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
-              total += service.price
+              total += service.price + service.tax
             }
           } else if (service.price === 0) {
             total += 0
           } else {
-            total += service.price
+            total += service.price + service.tax
           }
+        } else if (service.category === '4') {
+          total += service.price
         }
       }
       return total

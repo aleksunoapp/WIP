@@ -129,30 +129,15 @@ export const fetchAdvisor = async () => {
     .catch((e) => { throw e })
 }
 
-export const fetchTax = async () => {
-  const selectedServices = []
-  store.state.services.forEach((service) => {
-    if (service.category !== '3' && service.category !== '4') {
-      if (service.subServices) {
-        service.subServices.forEach((subService) => {
-          if (subService.isSelected) {
-            selectedServices.push(subService.id)
-          }
-        })
-      } else {
-        if (service.isSelected) {
-          selectedServices.push(service.id)
-        }
-      }
-    }
-  })
-
+export const fetchTax = async (serviceIds) => {
   const url = new URL(`${baseUrl}/tax/${store.state.slug}`)
   const headers = new Headers({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${store.state.token}`
   })
-  const body = '{ selectedServices: ' + JSON.stringify(selectedServices) + '}'
+  const body = JSON.stringify({
+    selectedServices: serviceIds
+  })
 
   return fetchWithTimeout(url, {
     method: 'POST',
@@ -173,7 +158,7 @@ export const postServices = async () => {
         service.subServices.forEach((subService) => {
           if (subService.isSelected) {
             subService.isApproved = true
-            subService.reasonId = subService.declinedReasonId
+            subService.reasonId = -1
             confirmedServices.push(subService)
           } else {
             subService.isApproved = false
@@ -184,7 +169,7 @@ export const postServices = async () => {
       } else {
         if (service.isSelected) {
           service.isApproved = true
-          service.reasonId = service.declinedReasonId
+          service.reasonId = -1
           confirmedServices.push(service)
         } else {
           service.isApproved = false

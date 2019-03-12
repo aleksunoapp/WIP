@@ -1,114 +1,5 @@
 export const getters = {
-// displayPrice(service)
-// categoryName(id)
-// service({id: 0})
-// getTotal([])
-// services({
-//   isHighlighted,
-//   isSelected,
-//   categories,
-//   categoryTypes
-// })
-  getServices: (state, getters) => {
-    return function ({
-      isHighlighted,
-      isSelected,
-      categories,
-      categoryTypes
-    }) {
-      const services = []
-      if (arguments.length) {
-        for (const service of state.services) {
-          const category = getters.categoryById(service.category)
-          let matches = []
-          if (service.subServices) {
-            for (const subService of service.subServices) {
-              if (isHighlighted !== undefined) {
-                if (subService.isHighlighted === isHighlighted) {
-                  matches.push(true)
-                } else {
-                  matches.push(false)
-                }
-              }
-              if (isSelected !== undefined) {
-                if (subService.isSelected === isSelected) {
-                  matches.push(true)
-                } else {
-                  matches.push(false)
-                }
-              }
-              if (categories !== undefined) {
-                const id = state.categoryIdMap[subService.category]
-                if (categories.includes(id)) {
-                  matches.push(true)
-                } else {
-                  matches.push(false)
-                }
-              }
-              if (categoryTypes !== undefined) {
-                if (categoryTypes.includes(category.serviceCategoryType)) {
-                  matches.push(true)
-                } else {
-                  matches.push(false)
-                }
-              }
-              if (!matches.includes(false)) {
-                services.push({
-                  ...subService,
-                  sortOrder: category.sortOrder
-                })
-              }
-            }
-          } else {
-            if (isHighlighted !== undefined) {
-              if (service.isHighlighted === isHighlighted) {
-                matches.push(true)
-              } else {
-                matches.push(false)
-              }
-            }
-            if (isSelected !== undefined) {
-              if (service.isSelected === isSelected) {
-                matches.push(true)
-              } else {
-                matches.push(false)
-              }
-            }
-            if (categories !== undefined) {
-              const id = state.categoryIdMap[service.category]
-              if (categories.includes(id)) {
-                matches.push(true)
-              } else {
-                matches.push(false)
-              }
-            }
-            if (categoryTypes !== undefined) {
-              if (categoryTypes.includes(category.serviceCategoryType)) {
-                matches.push(true)
-              } else {
-                matches.push(false)
-              }
-            }
-            if (!matches.includes(false)) {
-              services.push({
-                ...service,
-                sortOrder: category.sortOrder
-              })
-            }
-          }
-        }
-      }
-      services.sort((a, b) => a.sortOrder - b.sortOrder)
-      return services
-    }
-  },
-  // categories({
-  //   ids,
-  //   types,
-  //   shownOnInspection,
-  //   services
-  // })
-  categoriesShown: (state, getters) => {
+  categoriesShown: (state) => {
     let categoriesShown = []
     for (const category of state.categories) {
       if (
@@ -124,20 +15,6 @@ export const getters = {
     }
 
     return categoriesShown
-  },
-  categoriesShownOnRoute: (state, getters) => {
-    if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
-      return getters.categoriesShown.filter(category => {
-        return getters.categoryContainsHiglightedServices(category.id) && !getters.isPass(category.id)
-      })
-    }
-    if (state.route.name === 'wait-services') {
-      return getters.categoriesShown.filter(category => {
-        return getters.categoryContainsUnhiglightedServices(category.id) &&
-          !getters.isPass(category.id)
-      })
-    }
-    return getters.categoriesShown
   },
   categoryName: (state) => (id) => {
     const idMap = {
@@ -183,10 +60,7 @@ export const getters = {
       return getters.categoryServices(id).filter(service => service.isHighlighted)
     }
     if (state.route.name === 'wait-services') {
-      return getters.categoryServices(id).filter(service => !service.isHighlighted)
-    }
-    if (state.route.name === 'additional-summary') {
-      return getters.getServices({ isHighlighted: true, categories: [id] })
+      return getters.categoryServices(id).filter(service => !service.isHighlighted && service.deferred)
     }
     return getters.categoryServices(id)
   },
@@ -295,6 +169,49 @@ export const getters = {
   actionableAdditionalServices: (state, getters) => {
     return getters.additionalServices.filter(service => service.category < '8')
   },
+  deferredServices: (state) => {
+    let deferred = []
+    for (const service of state.services) {
+      if (service.category !== '3' && service.category !== '4' && service.category < '8') {
+        if (service.subServices) {
+          for (const subService of service.subServices) {
+            if (subService.deferred) {
+              deferred.push(subService)
+            }
+          }
+        } else if (service.deferred) {
+          deferred.push(service)
+        }
+      }
+    }
+    return deferred
+  },
+  previouslyApprovedServices: (state, getters) => {
+    const additional = getters.additionalServices.length > 0
+    const services = []
+    for (const service of state.services) {
+      if (service.subServices) {
+        for (const subService of service.subServices) {
+          if (subService.category === '4') {
+            services.push(subService)
+          } else if (additional) {
+            if (!subService.deferred && !subService.isHighlighted) {
+              services.push(subService)
+            }
+          }
+        }
+      } else {
+        if (service.category === '4') {
+          services.push(service)
+        } else if (additional) {
+          if (!service.deferred && !service.isHighlighted) {
+            services.push(service)
+          }
+        }
+      }
+    }
+    return services
+  },
   respondBy: (state) => {
     return state.deadlines.respondBy === null ? null : new Date(state.deadlines.respondBy)
   },
@@ -328,12 +245,12 @@ export const getters = {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
                 if (subService.isSelected) {
-                  inspectionTotal += subService.price
+                  inspectionTotal += subService.price + subService.tax
                 }
               })
             } else {
               if (service.isSelected) {
-                inspectionTotal += service.price
+                inspectionTotal += service.price + service.tax
               }
             }
           }
@@ -345,10 +262,10 @@ export const getters = {
           if (service.category === '4') {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
-                serviceTotal += subService.price
+                serviceTotal += subService.price + subService.tax
               })
             } else {
-              serviceTotal += service.price
+              serviceTotal += service.price + service.tax
             }
           }
         })
@@ -365,7 +282,7 @@ export const getters = {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
                 if (subService.isSelected) {
-                  inspectionTotal += subService.price
+                  inspectionTotal += subService.price + subService.tax
                 }
               })
             }
@@ -374,10 +291,10 @@ export const getters = {
       }
     })
 
-    for (const category of getters.categoriesShownOnRoute) {
+    for (const category of getters.categoriesShown) {
       for (const service of getters.categoryServicesShownOnRoute(category.id)) {
         if (service.isSelected) {
-          additionalTotal += service.price
+          additionalTotal += service.price + service.tax
         }
       }
     }

@@ -1,0 +1,554 @@
+ecbb13f1-f964-449e-bdbe-8f089e238e28
+
+{
+  "repairOrderId": "0",
+  "tag": null,
+  "customer": {
+    "customerId": "995",
+    "title": null,
+    "firstName": "Gary",
+    "lastName": "Kalk",
+    "authenticationAnswer": "gary",
+    "culture": "en-CA",
+    "phone": "14169061031",
+    "notificationType": 0,
+    "email": null,
+    "isBusiness": false,
+    "name": "Gary Kalk"
+  },
+  "advisor": {
+    "advisorUserId": "346739",
+    "advisorDmsId": null,
+    "advisorName": "JOHN WILLIAMS",
+    "advisorImageUrl": "http://unoapp.com/dfx-mpi/v1/images/guy.png",
+    "advisorEmail": null
+  },
+  "dealer": {
+    "dealerId": "8004",
+    "name": "Nissan of Anytown USA",
+    "logoUrl": "",
+    "phone": "7709988686",
+    "email": "service@regalauto.com",
+    "topImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-logo.png",
+    "bottomImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+    "marketingImageUrl": "",
+    "disclaimer": "The information contained on this Website (the \"Service\") is for general information purposes only.Dealer - Fx assumes no responsibility for errors or omissions in the contents on the Service.",
+    "address": "123 Demo Street",
+    "smsPhone": "12242035286",
+    "salesTaxRate": 6.99,
+    "salesTaxApplyToParts": true,
+    "salesTaxApplyToLabor": false,
+    "shopSupplyChargeIsPercentage": true,
+    "shopSupplyChargeValue": 4.3,
+    "shopSupplyChargeMin": 2.5,
+    "shopSupplyChargeMax": 75,
+    "shopSupplyChargeApplyToParts": true,
+    "shopSupplyChargeApplyToLabor": true,
+    "shopSupplyChargeTaxable": true,
+    "mainManufacturersId": null,
+    "dealerTimeZoneName": null
+  },
+  "serviceCategory": [
+    {
+      "serviceCategoryId": "1",
+      "name": "Safety Concerns",
+      "nameTranslations": [
+        {
+          "culture": "en-US",
+          "name": "Safety Concerns"
+        },
+        {
+          "culture": "en-CA",
+          "name": "Safety Concerns"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-Safety Concerns"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-Safety Concerns"
+        }
+      ],
+      "serviceCategoryType": "SAFETY",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/fail-white.png",
+      "sortOrder": 1,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "serviceCategoryId": "2",
+      "name": "Items Requiring Attention",
+      "nameTranslations": [
+        {
+          "culture": "en-US",
+          "name": "Items Requiring Attention"
+        },
+        {
+          "culture": "en-CA",
+          "name": "Items Requiring Attention"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-Items Requiring Attention"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-Items Requiring Attention"
+        }
+      ],
+      "serviceCategoryType": "ATTN",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/warning-white.png",
+      "sortOrder": 2,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "serviceCategoryId": "3",
+      "name": "Items Not Requiring Any Action",
+      "nameTranslations": [
+        {
+          "culture": "en-US",
+          "name": "Items Not Requiring Any Action"
+        },
+        {
+          "culture": "en-CA",
+          "name": "Items Not Requiring Any Action"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-Items Not Requiring Any Action"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-Items Not Requiring Any Action"
+        }
+      ],
+      "serviceCategoryType": "PASS",
+      "iconUrl": "http://unoapp.com/dfx-mpi/v1/images/pass-white.png",
+      "sortOrder": 3,
+      "defaultExpended": false,
+      "isPreApproved": false,
+      "showOnSummary": false,
+      "showOnInspection": true
+    },
+    {
+      "serviceCategoryId": "4",
+      "name": "Previously Approved Services",
+      "nameTranslations": [
+        {
+          "culture": "en-US",
+          "name": "Previously Approved Services"
+        },
+        {
+          "culture": "en-CA",
+          "name": "Previously Approved Services"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-Previously Approved Services"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-Previously Approved Services"
+        }
+      ],
+      "serviceCategoryType": "PRE",
+      "iconUrl": "",
+      "sortOrder": 99,
+      "defaultExpended": true,
+      "isPreApproved": true,
+      "showOnSummary": true,
+      "showOnInspection": false
+    },
+    {
+      "serviceCategoryId": "5",
+      "name": "Customer Concerns",
+      "nameTranslations": [
+        {
+          "culture": "en-US",
+          "name": "Customer Concerns"
+        },
+        {
+          "culture": "en-CA",
+          "name": "Customer Concerns"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-Customer Concerns"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-Customer Concerns"
+        }
+      ],
+      "serviceCategoryType": "CC",
+      "iconUrl": "https://test2dynamicmpibridge.dealer-fx.com/Content/images/ServiceCategory/Guest_Concerns_Greybard.png",
+      "sortOrder": 4,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": false
+    }
+  ],
+  "inspectionPdfUrl": [
+    {
+      "culture": "en-CA",
+      "name": "http://test2newommcache2.dealer-fx.com/41/8002/en-US/1420174_1N4AL2APXAN402749_201707241227060264.PDF"
+    },
+    {
+      "culture": "en-US",
+      "name": "http://test2newommcache2.dealer-fx.com/41/8002/en-US/1420174_1N4AL2APXAN402749_201707241227060264.PDF"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "http://test2newommcache2.dealer-fx.com/41/8004/fr-CA/1961512_KNMAT2MV6HP531123_201802021324370512.PDF"
+    },
+    {
+      "culture": "es-MX",
+      "name": "http://test2newommcache2.dealer-fx.com/41/8004/fr-CA/1961512_KNMAT2MV6HP531123_201802021324370512.PDF"
+    }
+  ],
+  "vehicle": {
+    "vin": null,
+    "description": "2010 ALTIMA",
+    "imageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+    "vehicleId": 0
+  },
+  "themeId": "NISSAN",
+  "promise": "2019-05-30T23:30:00+00:00",
+  "responseBy": "2019-03-30T23:00:00+00:00",
+  "statusId": 5,
+  "declineReasons": [
+    {
+      "id": 1,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "I don't have time"
+        },
+        {
+          "culture": "en-US",
+          "name": "I don't have time"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-I don't have time"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-I don't have time"
+        }
+      ],
+      "name": "I don't have time"
+    },
+    {
+      "id": 2,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "I am concerned with the cost"
+        },
+        {
+          "culture": "en-US",
+          "name": "I am concerned with the cost"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-I am concerned with the cost"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-I am concerned with the cost"
+        }
+      ],
+      "name": "I am concerned with the cost"
+    },
+    {
+      "id": 3,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "I cannot afford this item"
+        },
+        {
+          "culture": "en-US",
+          "name": "I cannot afford this item"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-I cannot afford this item"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-I cannot afford this item"
+        }
+      ],
+      "name": "I cannot afford this item"
+    },
+    {
+      "id": 4,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "I am considering changing my vehicle"
+        },
+        {
+          "culture": "en-US",
+          "name": "I am considering changing my vehicle"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-I am considering changing my vehicle"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-I am considering changing my vehicle"
+        }
+      ],
+      "name": "I am considering changing my vehicle"
+    },
+    {
+      "id": 5,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "I need alternate transportation"
+        },
+        {
+          "culture": "en-US",
+          "name": "I need alternate transportation"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-I need alternate transportation"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-I need alternate transportation"
+        }
+      ],
+      "name": "I need alternate transportation"
+    },
+    {
+      "id": 0,
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "No reason"
+        },
+        {
+          "culture": "en-US",
+          "name": "No reason"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "FR-No reason"
+        },
+        {
+          "culture": "es-mx",
+          "name": "ES-No reason"
+        }
+      ],
+      "name": "No reason"
+    }
+  ],
+  "supportedLanguages": [
+    {
+      "culture": "en-CA",
+      "name": "English"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "French"
+    },
+    {
+      "culture": "es-mx",
+      "name": "Spanish"
+    }
+  ],
+  "customerConcernsLabel": [
+    {
+      "culture": "en-CA",
+      "name": "Customer Concerns"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "Préoccupations du client"
+    },
+    {
+      "culture": "es-mx",
+      "name": "ES-Customer Concerns"
+    }
+  ],
+  "customerCommentsLabel": [
+    {
+      "culture": "en-CA",
+      "name": "Customer Comments"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "Commentaires du client"
+    },
+    {
+      "culture": "es-mx",
+      "name": "ES-Customer Comments"
+    }
+  ],
+  "services": [
+    {
+      "serviceId": "30",
+      "itemId": "0",
+      "parentServiceId": "",
+      "serviceCategoryId": "3",
+      "laborPrice": 0,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/364x423.png?text=Safety%20Concerns%20Service%2030",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": true,
+      "isHighlighted": false,
+      "declinedReasonId": -1,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "None",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Service 30",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Service 30 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service 30 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Service 30 (es-mx)"
+        }
+      ]
+    },
+    {
+      "serviceId": "31",
+      "itemId": "0",
+      "parentServiceId": "",
+      "serviceCategoryId": "3",
+      "laborPrice": 0,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/364x423.png?text=Safety%20Concerns%20Service%2030",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": true,
+      "isHighlighted": false,
+      "declinedReasonId": -1,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "None",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Service 31",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Service 31 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service 31 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Service 31 (es-mx)"
+        }
+      ]
+    },
+    {
+      "serviceId": "32",
+      "itemId": "0",
+      "parentServiceId": "31",
+      "serviceCategoryId": "3",
+      "laborPrice": 0,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/364x423.png?text=Safety%20Concerns%20Service%2030",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": true,
+      "isHighlighted": false,
+      "declinedReasonId": -1,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "None",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Service 32",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Service 32 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service 32 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Service 32 (es-mx)"
+        }
+      ]
+    }
+  ]
+}
