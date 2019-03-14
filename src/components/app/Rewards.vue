@@ -225,17 +225,17 @@
                         <span>{{ tier.name }}</span>
                       </div>
                       <div>
-                        <strong>Description:</strong>
+                        <strong>Description: </strong>
                         <span>{{ tier.description }}</span>
                       </div>
                     </div>
                     <div class="col-sm-5">
                       <div>
-                        <strong>Points:</strong>
+                        <strong>Points: </strong>
                         <span>{{ tier.points }}</span>
                       </div>
                       <div>
-                        <strong>Starts:</strong>
+                        <strong>Starts: </strong>
                         <span>{{ tier.stars }}</span>
                       </div>
                     </div>

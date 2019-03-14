@@ -145,10 +145,10 @@ export default {
   },
   methods: {
     /**
-		 * To check if the tier data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the tier data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateTierData () {
       var editRewardsTierVue = this
       return new Promise(function (resolve, reject) {
@@ -171,23 +171,23 @@ export default {
       })
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @returns {undefined}
+     */
     clearError () {
       this.errorMessage = ''
     },
     /**
-		 * To update the tier and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the tier and close the modal.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateRewardTier () {
       var editRewardsTierVue = this
       editRewardsTierVue.clearError()
       editRewardsTierVue.rewardTierToBeEdited.updated_by =
-				editRewardsTierVue.$root.createdBy
+        editRewardsTierVue.$root.createdBy
       return editRewardsTierVue
         .validateTierData()
         .then(response => {
@@ -201,6 +201,7 @@ export default {
             .then(response => {
               if (response.code === 200 && response.status === 'ok') {
                 this.closeModalAndUpdate()
+                this.confirmEdit(response.payload)
               } else {
                 editRewardsTierVue.errorMessage = response.message
               }
@@ -226,18 +227,42 @@ export default {
         })
     },
     /**
-		 * To just close the modal when the user clicks on the 'x' to close the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
+    confirmEdit (payload = {}) {
+      if (!payload) { payload = {} }
+      let title = 'Success'
+      let text = 'The Reward Tier has been saved'
+      let type = 'success'
+
+      if (payload && payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes has been sent for approval'
+        type = 'info'
+      }
+
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
+     * To just close the modal when the user clicks on the 'x' to close the modal.
+     * @function
+     * @returns {undefined}
+     */
     closeModal () {
       this.$emit('closeEditTierModal')
     },
     /**
-		 * To close the modal and emit the updated folder object to the parent.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal and emit the updated folder object to the parent.
+     * @function
+     * @returns {undefined}
+     */
     closeModalAndUpdate () {
       this.$emit('updateRewardTier', this.rewardTierToBeEdited)
     }
