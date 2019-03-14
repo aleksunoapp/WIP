@@ -41,7 +41,7 @@
               v-if="!loading"
               :polygons="profiles"
               width="100%"
-              height="500px"
+              height="600px"
               :lat="latitude"
               :lng="longitude"
               multi
@@ -148,7 +148,7 @@
           class="row"
         >
           <div
-            v-show="!loading && profiles.length"
+            v-show="!loading"
             class="col-xs-12"
           >
             <button
@@ -199,7 +199,7 @@ export default {
     latitude () {
       if (
         this.$root.activeLocation.latitude !== null &&
-				this.$root.activeLocation.latitude !== undefined
+        this.$root.activeLocation.latitude !== undefined
       ) {
         return Number(this.$root.activeLocation.latitude)
       } else {
@@ -209,7 +209,7 @@ export default {
     longitude () {
       if (
         this.$root.activeLocation.longitude !== null &&
-				this.$root.activeLocation.longitude !== undefined
+        this.$root.activeLocation.longitude !== undefined
       ) {
         return Number(this.$root.activeLocation.longitude)
       } else {
@@ -254,20 +254,20 @@ export default {
   },
   methods: {
     /**
-		 * To clear an error.
-		 * @function
-		 * @param {string} name - Name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error.
+     * @function
+     * @param {string} name - Name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To update the profiles array with polygon paths from the map
-		 * @function
-		 * @param {array} polygons - An array of objects containing polygon paths and colors
-		 * @returns {undefined}
-		 */
+     * To update the profiles array with polygon paths from the map
+     * @function
+     * @param {array} polygons - An array of objects containing polygon paths and colors
+     * @returns {undefined}
+     */
     updatePolygons (polygons) {
       let updated = []
       polygons.forEach(polygon => {
@@ -295,10 +295,10 @@ export default {
       this.profiles = updated
     },
     /**
-		 * To get details of the delivery profile
-		 * @function
-		 * @returns {object} - An api network call promise
-		 */
+     * To get details of the delivery profile
+     * @function
+     * @returns {object} - An api network call promise
+     */
     getDeliveryZones () {
       if (this.$root.activeLocation.id === undefined) {
         return
@@ -332,12 +332,12 @@ export default {
         })
     },
     /**
-		 * To compare two delivery profiles
-		 * @function
-		 * @param {object} originalProfile - Profile to compare to
-		 * @param {object} newProfile - Profile to compare
-		 * @returns {boolean} - True if there's a difference, false if not
-		 */
+     * To compare two delivery profiles
+     * @function
+     * @param {object} originalProfile - Profile to compare to
+     * @param {object} newProfile - Profile to compare
+     * @returns {boolean} - True if there's a difference, false if not
+     */
     compareProfiles (originalProfile, newProfile) {
       let modified = false
       if (newProfile === undefined) {
@@ -359,14 +359,14 @@ export default {
       }
       if (
         String(newProfile.additional_perkm) !==
-				String(originalProfile.additional_perkm)
+        String(originalProfile.additional_perkm)
       ) {
         modified = true
         return modified
       }
       if (
         newProfile.delivery_polygon.length !==
-				originalProfile.delivery_polygon.length
+        originalProfile.delivery_polygon.length
       ) {
         modified = true
         return modified
@@ -375,14 +375,14 @@ export default {
       for (let j = 0; j < newProfile.delivery_polygon.length; j++) {
         if (
           Number(newProfile.delivery_polygon[j][0]).toFixed(12) !==
-					Number(originalProfile.delivery_polygon[j][0]).toFixed(12)
+          Number(originalProfile.delivery_polygon[j][0]).toFixed(12)
         ) {
           modified = true
           break
         }
         if (
           Number(newProfile.delivery_polygon[j][1]).toFixed(12) !==
-					Number(originalProfile.delivery_polygon[j][1]).toFixed(12)
+          Number(originalProfile.delivery_polygon[j][1]).toFixed(12)
         ) {
           modified = true
           break
@@ -392,10 +392,10 @@ export default {
       return modified
     },
     /**
-		 * To validate data before making a call
-		 * @function
-		 * @returns {object} - Promise with a rejection reason
-		 */
+     * To validate data before making a call
+     * @function
+     * @returns {object} - Promise with a rejection reason
+     */
     validate () {
       const _this = this
       const numberRegex = /^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/
@@ -439,11 +439,11 @@ export default {
       })
     },
     /**
-		 * To create a new delivery zone
-		 * @function
-		 * @param {object} profile - The zone to create
-		 * @returns {object} - An api network call promise
-		 */
+     * To create a new delivery zone
+     * @function
+     * @param {object} profile - The zone to create
+     * @returns {object} - An api network call promise
+     */
     createDeliveryZone (profile) {
       const _this = this
       return DeliveryFunctions.createDeliveryProfile({
@@ -467,11 +467,11 @@ export default {
         })
     },
     /**
-		 * To update a delivery zone
-		 * @function
-		 * @param {object} profile - The zone to update
-		 * @returns {object} - An api network call promise
-		 */
+     * To update a delivery zone
+     * @function
+     * @param {object} profile - The zone to update
+     * @returns {object} - An api network call promise
+     */
     updateDeliveryZone (profile) {
       const _this = this
       return DeliveryFunctions.updateDeliveryProfile(profile)
@@ -492,11 +492,11 @@ export default {
         })
     },
     /**
-		 * To delete a delivery zone
-		 * @function
-		 * @param {object} profile - The zone to delete
-		 * @returns {object} - An api network call promise
-		 */
+     * To delete a delivery zone
+     * @function
+     * @param {object} profile - The zone to delete
+     * @returns {object} - An api network call promise
+     */
     deleteDeliveryZone (profile) {
       const _this = this
       return DeliveryFunctions.deleteDeliveryProfile(profile)
@@ -517,10 +517,10 @@ export default {
         })
     },
     /**
-		 * To save changes made by the user
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To save changes made by the user
+     * @function
+     * @returns {undefined}
+     */
     saveDeliveryZones () {
       var _this = this
       this.validate()
@@ -591,11 +591,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Zones have been saved'
@@ -614,11 +614,11 @@ export default {
       })
     },
     /**
-		 * To warn user before discarding unsaved changes
-		 * @function
-		 * @param {object} next - A router callback to navigate to the selected route
-		 * @returns {undefined}
-		 */
+     * To warn user before discarding unsaved changes
+     * @function
+     * @param {object} next - A router callback to navigate to the selected route
+     * @returns {undefined}
+     */
     showUnsavedWarning (next) {
       this.$swal({
         title: 'Discard changes?',
@@ -640,29 +640,29 @@ export default {
 
 <style scoped>
 .legend-row {
-	width: 100%;
-	display: flex;
-	align-items: flex-end;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
 }
 .color-box {
-	width: 50px;
-	height: 20px;
-	margin: 0 10px 10px 0;
+  width: 50px;
+  height: 20px;
+  margin: 0 10px 10px 0;
 }
 .input-container {
-	display: flex;
-	flex-direction: column;
-	flex-basis: 20%;
-	margin: 0 10px;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 20%;
+  margin: 0 10px;
 }
 .input-label-container {
-	display: flex;
+  display: flex;
 }
 .hint {
-	width: 20px;
-	height: 20px;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

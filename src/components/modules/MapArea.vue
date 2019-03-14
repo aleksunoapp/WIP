@@ -1,22 +1,23 @@
 <!--
 
-	REQUIRES v-if="false" WHEN HIDDEN
+  REQUIRES v-if="false" WHEN HIDDEN
 
-	If used inside a hidden element
-	(i.e. if an ancestor is controlled by a v-if or v-show directive)
-	must be used with v-if
+  If used inside a hidden element
+  (i.e. if an ancestor is controlled by a v-if or v-show directive)
+  must be used with v-if
 
-	<map-area v-if="!parentHidden"></map-area>
+  <map-area v-if="!parentHidden"></map-area>
 
  -->
 
 <template>
   <div
     class="map-polygon-container"
-    :style="`width:${this.width};height:${this.height};`"
+    :style="`width:${this.width};`"
   >
     <div
       :id="`map-polygon${this._uid}`"
+      :style="`height:${this.height};`"
       class="map-polygon"
     />
 
@@ -107,13 +108,13 @@ export default {
       default: () => 13
     },
     /* 	an array of objects, each containing a coordinates property with the vertex lat and lng
-			[
-				{
-					id: 1,
-					paths: [ [44, -85], [45, -75], [40, -75], [40, -85] ]
-				}
-			]
-		*/
+      [
+        {
+          id: 1,
+          paths: [ [44, -85], [45, -75], [40, -75], [40, -85] ]
+        }
+      ]
+    */
     polygons: {
       type: Array,
       required: false,
@@ -173,10 +174,10 @@ export default {
     this.colorsArray = [...this.colors]
   },
   /**
-	 * To load the Google Maps Javascript API
-	 * @function
-	 * @returns {undefined}
-	 */
+   * To load the Google Maps Javascript API
+   * @function
+   * @returns {undefined}
+   */
   mounted () {
     let _this = this
     GoogleMapsApiLoader({
@@ -193,10 +194,10 @@ export default {
   },
   methods: {
     /**
-		 * To mount a map.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To mount a map.
+     * @function
+     * @returns {undefined}
+     */
     mountMap () {
       let _this = this
       this.map = new google.maps.Map(
@@ -225,10 +226,10 @@ export default {
     },
 
     /**
-		 * To center and zoom map to fit the polygon.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To center and zoom map to fit the polygon.
+     * @function
+     * @returns {undefined}
+     */
     resizeToPolygons () {
       let bounds = new google.maps.LatLngBounds()
 
@@ -247,12 +248,12 @@ export default {
     },
 
     /**
-		 * To zoom and center the map on a region
-		 * @function
-		 * @param {array} bounds - An array of NE and SE corner coordinate arrays
-		 * @param {object} center - A {lat, lng} coordinates object
-		 * @returns {undefined}
-		 */
+     * To zoom and center the map on a region
+     * @function
+     * @param {array} bounds - An array of NE and SE corner coordinate arrays
+     * @param {object} center - A {lat, lng} coordinates object
+     * @returns {undefined}
+     */
     panAndCenter (bounds, center) {
       let mapBounds = new google.maps.LatLngBounds()
       for (let i = 0; i < bounds.length; i++) {
@@ -266,10 +267,10 @@ export default {
     },
 
     /**
-		 * To display the polygon.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To display the polygon.
+     * @function
+     * @returns {undefined}
+     */
     displayPolygons () {
       this.polygons.forEach((polygon, index) => {
         const paths = polygon.paths
@@ -300,11 +301,11 @@ export default {
     },
 
     /**
-		 * To register listeners that trigger when polygon is edited
-		 * @function
-		 * @param {object} polygon - The polygon to attach the listeners to
-		 * @returns {undefined}
-		 */
+     * To register listeners that trigger when polygon is edited
+     * @function
+     * @param {object} polygon - The polygon to attach the listeners to
+     * @returns {undefined}
+     */
     addEditListeners (polygon) {
       let _this = this
 
@@ -325,29 +326,29 @@ export default {
     },
 
     /**
-		 * To switch to polygon drawing mode
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To switch to polygon drawing mode
+     * @function
+     * @returns {undefined}
+     */
     polygonDrawingMode () {
       this.drawingManager.setDrawingMode('polygon')
       this.mode = 'polygon'
     },
     /**
-		 * To switch to shape moving mode
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To switch to shape moving mode
+     * @function
+     * @returns {undefined}
+     */
     shapeMoveMode () {
       this.drawingManager.setDrawingMode(null)
       this.mode = 'move'
     },
 
     /**
-		 * To generate options for the Drawing Manager
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To generate options for the Drawing Manager
+     * @function
+     * @returns {undefined}
+     */
     getDrawingManagerOptions () {
       const color = this.getColor()
       return {
@@ -363,10 +364,10 @@ export default {
       }
     },
     /**
-		 * To get the next available color
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To get the next available color
+     * @function
+     * @returns {undefined}
+     */
     getColor () {
       const color = this.colorsArray[0]
       this.colorsArray.splice(0, 1)
@@ -374,11 +375,11 @@ export default {
       return color
     },
     /**
-		 * To reuse a color
-		 * @function
-		 * @param {string} color - A string with the hex of the color to reuse
-		 * @returns {undefined}
-		 */
+     * To reuse a color
+     * @function
+     * @param {string} color - A string with the hex of the color to reuse
+     * @returns {undefined}
+     */
     recycleColor (color) {
       const colorIndex = this.colorsArray.indexOf(color)
       this.colorsArray.splice(colorIndex, 1)
@@ -390,10 +391,10 @@ export default {
       return id
     },
     /**
-		 * To enable user to draw a polygon.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To enable user to draw a polygon.
+     * @function
+     * @returns {undefined}
+     */
     mountDrawingManager () {
       this.drawingManager = new google.maps.drawing.DrawingManager(
         this.getDrawingManagerOptions()
@@ -411,11 +412,11 @@ export default {
     },
 
     /**
-		 * To register listeners that trigger when polygon is edited
-		 * @function
-		 * @param {object} polygon - The polygon to attach the listeners to
-		 * @returns {undefined}
-		 */
+     * To register listeners that trigger when polygon is edited
+     * @function
+     * @param {object} polygon - The polygon to attach the listeners to
+     * @returns {undefined}
+     */
     polygonComplete (polygon) {
       if (!this.multi) {
         this.shapeMoveMode()
@@ -433,11 +434,11 @@ export default {
     },
 
     /**
-		 * To remove a shape
-		 * @function
-		 * @param {integer} index - Index of the polygon to remove
-		 * @returns {undefined}
-		 */
+     * To remove a shape
+     * @function
+     * @param {integer} index - Index of the polygon to remove
+     * @returns {undefined}
+     */
     deletePolygon (index) {
       this.mapPolygons[index].setMap(null)
       this.recycleColor(this.mapPolygons[index].fillColor)
@@ -447,10 +448,10 @@ export default {
     },
 
     /**
-		 * To update the paths property of the polygons prop, add a color property and add new polygons
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To update the paths property of the polygons prop, add a color property and add new polygons
+     * @function
+     * @returns {undefined}
+     */
     editedPolygons () {
       let polygons = []
       this.mapPolygons.forEach(mapPolygon => {
@@ -463,9 +464,9 @@ export default {
         if (
           !(
             coordinates[0][0] ===
-							coordinates[coordinates.length - 1][0] &&
-						coordinates[0][1] ===
-							coordinates[coordinates.length - 1][1]
+              coordinates[coordinates.length - 1][0] &&
+            coordinates[0][1] ===
+              coordinates[coordinates.length - 1][1]
           )
         ) {
           coordinates.push(coordinates[0])
@@ -488,10 +489,10 @@ export default {
       return polygons
     },
     /**
-		 * To notify parent on create or change.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To notify parent on create or change.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     emitPolygons () {
       this.$emit('polygonEmitted', this.editedPolygons())
     }
@@ -502,44 +503,44 @@ export default {
 
 <style scoped>
 .map-polygon-container {
-	position: relative;
-	display: flex;
-	flex-direction: column;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .map-polygon {
-	height: 100%;
-	width: 100%;
+  height: 600px;
+  width: 100%;
 }
 .legend {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	padding: 20px 0;
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
 }
 .mode-buttons-container {
-	display: inline-flex;
-	padding-top: 5px;
+  display: inline-flex;
+  padding-top: 5px;
 }
 .remove-buttons-container {
-	display: inline-flex;
-	flex-wrap: wrap;
-	overflow: auto;
-	max-height: 100%;
+  display: inline-flex;
+  flex-wrap: wrap;
+  overflow: auto;
+  max-height: 100%;
 }
 .draw-button {
-	margin: 0 20px 0 5px;
+  margin: 0 20px 0 5px;
 }
 .remove-button {
-	margin-top: 5px;
-	margin-right: 5px;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 .remove-button-contents {
-	display: flex;
-	align-items: flex-start;
-	justify-content: flex-start;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 .remove-button-contents i {
-	margin-left: 5px;
+  margin-left: 5px;
 }
 </style>
