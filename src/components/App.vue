@@ -429,13 +429,13 @@ export default {
 						var activeLocation = localStorage.getItem(
               'activeLocation'
             )
-						let stores = response.payload
+            let stores = response.payload
             if (activeLocation) {
-							activeLocation = JSON.parse(activeLocation)
-							appVue.selectLocation(activeLocation)
-							stores = stores.filter(store => store.id !== activeLocation.id)
+              activeLocation = JSON.parse(activeLocation)
+              appVue.selectLocation(activeLocation)
+              stores = stores.filter(store => store.id !== activeLocation.id)
             }
-						appVue.setStoreLocations(stores)
+            appVue.setStoreLocations(stores)
             appVue.loading = false
           }
         })

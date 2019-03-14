@@ -99,6 +99,8 @@ import { App } from '@/main.js'
 const DiscountCategories = () => import('@/components/app/StoreManager/Discounts/DiscountCategories')
 const Discounts = () => import('@/components/app/StoreManager/Discounts/Discounts')
 const Currencies = () => import('@/components/app/StoreManager/Currencies')
+// Loyalty
+const LoyaltyProvider = () => import('@/components/app/Loyalty/LoyaltyProvider')
 
 Vue.use(Router)
 
@@ -783,6 +785,15 @@ export const routes = [
       {
         path: 'loyalty',
         redirect: 'loyalty/base_rule',
+        meta: {
+          adminOnly: true,
+          permissions: []
+        }
+      },
+      {
+        path: 'loyalty/provider',
+        component: LoyaltyProvider,
+        name: 'Loyalty Provider',
         meta: {
           adminOnly: true,
           permissions: []

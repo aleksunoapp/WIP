@@ -968,6 +968,22 @@
           </a>
           <ul class="sub-menu">
             <li
+              v-if="can()"
+              id="faq_users_link"
+              class="nav-item"
+              :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'provider'}"
+            >
+              <router-link
+                to="/app/loyalty/provider"
+                class="nav-link"
+              >
+                <i class="fa fa-credit-card" />
+                <span class="title">
+                  Provider
+                </span>
+              </router-link>
+            </li>
+            <li
               v-if="can('loyalty base_rule read')"
               id="faq_users_link"
               class="nav-item"
