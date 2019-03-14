@@ -11,7 +11,7 @@
     </h1>
     <!-- END PAGE TITLE-->
     <div class="note note-info">
-      <p>Create and manage the Social Feed.</p>
+      <p>View and manage the Social Feed.</p>
     </div>
     <div v-if="socialFeed.length">
       <h5>Filter By:</h5>
