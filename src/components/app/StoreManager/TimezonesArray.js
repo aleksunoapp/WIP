@@ -111,7 +111,6 @@ export default (function () {
     }
 
     const offsetLabel = `GMT${sign}${hours}:${minutes}`
-    console.log(`(${offsetLabel}) ${timezone.label}`)
     return {
       value: timezone.value,
       label: `(${offsetLabel}) ${timezone.label}`
