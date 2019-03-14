@@ -143,175 +143,177 @@
     </div>
     <!-- CREATE END -->
     <loading-screen
+      v-if="displayNewsFeedData"
       :show="displayNewsFeedData"
       :color="'#2C3E50'"
       :display="'inline'"
     />
-    <div class="margin-top-20">
-      <div class="relative-block">
-        <div
-          v-if="newsFeed.length"
-          class="clearfix"
-        >
-          <el-dropdown
-            trigger="click"
-            size="mini"
-            :show-timeout="50"
-            :hide-timeout="50"
-            @command="updateSortByOrder"
+    <template v-else>
+      <no-results
+        v-if="!newsFeed.length"
+        :show="!newsFeed.length"
+        :type="'news feed'"
+      />
+      <div
+        v-else
+        class="margin-top-20"
+      >
+        <div class="relative-block">
+          <div
+            v-if="newsFeed.length"
+            class="clearfix"
           >
-            <el-button size="mini">
-              Sort by
-              <span>
-                <i
-                  v-if="sortBy.order === 'ASC'"
-                  class="fa fa-sort-alpha-asc"
-                />
-                <i
-                  v-if="sortBy.order === 'DESC'"
-                  class="fa fa-sort-alpha-desc"
-                />
-              </span>
-              <i class="el-icon-arrow-down el-icon--right" />
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="ASC">
-                <i class="fa fa-sort-alpha-asc" />
-              </el-dropdown-item>
-              <el-dropdown-item command="DESC">
-                <i class="fa fa-sort-alpha-desc" />
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <page-results
-            class="pull-right"
-            :total-results="totalResults"
-            :active-page="activePage"
-            @pageResults="pageResultsUpdate"
-          />
-        </div>
-        <div
-          v-if="newsFeed.length"
-          class="portlet light portlet-fit bordered margin-top-20"
-        >
-          <div class="portlet-title">
-            <div class="caption">
-              <i class="fa fa-newspaper-o font-blue-madison" />
-              <span class="caption-subject bold font-blue-madison uppercase">
-                News Feed
-              </span>
-            </div>
+            <el-dropdown
+              trigger="click"
+              size="mini"
+              :show-timeout="50"
+              :hide-timeout="50"
+              @command="updateSortByOrder"
+            >
+              <el-button size="mini">
+                Sort by
+                <span>
+                  <i
+                    v-if="sortBy.order === 'ASC'"
+                    class="fa fa-sort-alpha-asc"
+                  />
+                  <i
+                    v-if="sortBy.order === 'DESC'"
+                    class="fa fa-sort-alpha-desc"
+                  />
+                </span>
+                <i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="ASC">
+                  <i class="fa fa-sort-alpha-asc" />
+                </el-dropdown-item>
+                <el-dropdown-item command="DESC">
+                  <i class="fa fa-sort-alpha-desc" />
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <page-results
+              class="pull-right"
+              :total-results="totalResults"
+              :active-page="activePage"
+              @pageResults="pageResultsUpdate"
+            />
           </div>
-          <div class="portlet-body">
-            <div class="timeline">
-              <!-- TIMELINE ITEM -->
-              <div
-                v-for="(news, index) in newsFeed"
-                :key="index"
-                class="timeline-item"
-              >
-                <div class="timeline-badge">
-                  <img
-                    v-if="news.image.length"
-                    class="timeline-badge-userpic"
-                    :src="news.image"
-                  >
-                  <img
-                    v-if="!news.image.length"
-                    class="timeline-badge-userpic"
-                    src="../../../src/assets/img/app/image-placeholder.png"
-                  >
-                </div>
+          <div class="portlet light portlet-fit bordered margin-top-20">
+            <div class="portlet-title">
+              <div class="caption">
+                <i class="fa fa-newspaper-o font-blue-madison" />
+                <span class="caption-subject bold font-blue-madison uppercase">
+                  News Feed
+                </span>
+              </div>
+            </div>
+            <div class="portlet-body">
+              <div class="timeline">
+                <!-- TIMELINE ITEM -->
                 <div
-                  :id="'news-' + news.id"
-                  class="timeline-body"
+                  v-for="(news, index) in newsFeed"
+                  :key="index"
+                  class="timeline-item"
                 >
-                  <div class="timeline-body-arrow" />
-                  <div class="timeline-body-head">
-                    <div class="timeline-body-head-caption">
-                      <a class="timeline-body-title font-blue-madison">
-                        {{ news.title }}
-                      </a>
-                    </div>
-                    <div class="timeline-body-head-actions">
-                      <div
-                        v-if="$root.permissions['news_feed update']"
-                        class="btn-group"
-                      >
-                        <button
-                          class="btn blue btn-sm"
-                          type="button"
-                          @click="editNewsFeed(news)"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                      <div
-                        v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
-                        class="btn-group"
-                      >
-                        <button
-                          class="btn blue btn-sm"
-                          type="button"
-                          @click="editNewsFeed(news)"
-                        >
-                          View
-                        </button>
-                      </div>
-                      <div
-                        v-if="$root.permissions['news_feed delete']"
-                        class="btn-group"
-                      >
-                        <button
-                          class="btn blue btn-outline btn-sm"
-                          type="button"
-                          @click="openDeleteModal(news)"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
+                  <div class="timeline-badge">
+                    <img
+                      v-if="news.image.length"
+                      class="timeline-badge-userpic"
+                      :src="news.image"
+                    >
+                    <img
+                      v-if="!news.image.length"
+                      class="timeline-badge-userpic"
+                      src="../../../src/assets/img/app/image-placeholder.png"
+                    >
                   </div>
-                  <div class="timeline-body-content">
-                    <h5>{{ news.formatted_date }}</h5>
-                    <span class="font-grey-cascade">
-                      {{ news.short_description }}
-                    </span>
-                    <span class="font-grey-cascade">
-                      {{ news.external_url }}
-                    </span>
+                  <div
+                    :id="'news-' + news.id"
+                    class="timeline-body"
+                  >
+                    <div class="timeline-body-arrow" />
+                    <div class="timeline-body-head">
+                      <div class="timeline-body-head-caption">
+                        <a class="timeline-body-title font-blue-madison">
+                          {{ news.title }}
+                        </a>
+                      </div>
+                      <div class="timeline-body-head-actions">
+                        <div
+                          v-if="$root.permissions['news_feed update']"
+                          class="btn-group"
+                        >
+                          <button
+                            class="btn blue btn-sm"
+                            type="button"
+                            @click="editNewsFeed(news)"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <div
+                          v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
+                          class="btn-group"
+                        >
+                          <button
+                            class="btn blue btn-sm"
+                            type="button"
+                            @click="editNewsFeed(news)"
+                          >
+                            View
+                          </button>
+                        </div>
+                        <div
+                          v-if="$root.permissions['news_feed delete']"
+                          class="btn-group"
+                        >
+                          <button
+                            class="btn blue btn-outline btn-sm"
+                            type="button"
+                            @click="openDeleteModal(news)"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="timeline-body-content">
+                      <h5>{{ news.formatted_date }}</h5>
+                      <span class="font-grey-cascade">
+                        {{ news.short_description }}
+                      </span>
+                      <span class="font-grey-cascade">
+                        {{ news.external_url }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
+              <!-- END TIMELINE ITEM -->
             </div>
-            <!-- END TIMELINE ITEM -->
+            <div
+              v-show="!newsFeed && errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
           </div>
-          <div
-            v-show="!newsFeed && errorMessage"
-            ref="errorMessage"
-            class="alert alert-danger"
-          >
-            <button
-              class="close"
-              @click="clearError('errorMessage')"
-            />
-            <span>{{ errorMessage }}</span>
-          </div>
-        </div>
-        <div v-else>
-          <no-results
-            :show="!newsFeed.length && !displayNewsFeedData"
-            :type="'news feed'"
+          <pagination
+            v-if="newsFeed.length && numPages > 1"
+            :passed-page="activePage"
+            :num-pages="numPages"
+            @activePageChange="activePageUpdate"
           />
         </div>
-        <pagination
-          v-if="newsFeed.length && numPages > 1"
-          :passed-page="activePage"
-          :num-pages="numPages"
-          @activePageChange="activePageUpdate"
-        />
       </div>
-    </div>
+    </template>
 
     <edit-news-feed
       v-if="showEditFeedModal"
@@ -455,10 +457,10 @@ export default {
   },
   methods: {
     /**
-		 * To close the modal for deleting a promotion and remove that promotion from DOM.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for deleting a promotion and remove that promotion from DOM.
+     * @function
+     * @returns {undefined}
+     */
     deleteNewsFeed () {
       this.deleting = true
       var _this = this
@@ -484,11 +486,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showDeleteSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The News Feed has been deleted'
@@ -507,20 +509,20 @@ export default {
       })
     },
     /**
-		 * To clear an error
-		 * @function
-		 * @param {string} name - Name of the variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error
+     * @function
+     * @param {string} name - Name of the variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To show the delete modal
-		 * @function
-		 * @param {object} news - The news object to delete
-		 * @returns {undefined}
-		 */
+     * To show the delete modal
+     * @function
+     * @param {object} news - The news object to delete
+     * @returns {undefined}
+     */
     openDeleteModal (news) {
       this.newsToDelete = { ...news }
       this.showDeleteModal = true
@@ -530,39 +532,39 @@ export default {
       this.showDeleteModal = false
     },
     /**
-		 * To toggle between the open and closed state of the resource picker
-		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
-		 * @returns {undefined}
-		 */
+     * To toggle between the open and closed state of the resource picker
+     * @function
+     * @param {string} object - The name of the object the image is for
+     * @param {object} value - The open / closed value of the picker
+     * @returns {undefined}
+     */
     toggleImageMode (object, value) {
       this.imageMode[object] = value
     },
     /**
-		 * To set the image to be same as the one emitted by the resource picker.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the resource picker.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.newNewsFeed.image = val.image_url
     },
     /**
-		 * To update the order property of sortBy.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
+     * To update the order property of sortBy.
+     * @function
+     * @param {object} value - The new value to assign.
+     * @returns {undefined}
+     */
     updateSortByOrder (value) {
       this.sortBy.order = value
     },
     /**
-		 * To catch updates from the PageResults component when the number of page results is updated.
-		 * @function
-		 * @param {integer} val - The number of page results to be returned.
-		 * @returns {undefined}
-		 */
+     * To catch updates from the PageResults component when the number of page results is updated.
+     * @function
+     * @param {integer} val - The number of page results to be returned.
+     * @returns {undefined}
+     */
     pageResultsUpdate (val) {
       if (parseInt(this.pageResultsValue) !== parseInt(val)) {
         this.pageResultsValue = val
@@ -571,11 +573,11 @@ export default {
       }
     },
     /**
-		 * To update the currently active pagination page.
-		 * @function
-		 * @param {integer} val - An integer representing the page number that we are updating to.
-		 * @returns {undefined}
-		 */
+     * To update the currently active pagination page.
+     * @function
+     * @param {integer} val - An integer representing the page number that we are updating to.
+     * @returns {undefined}
+     */
     activePageUpdate (val) {
       if (parseInt(this.activePage) !== parseInt(val)) {
         this.activePage = val
@@ -583,11 +585,11 @@ export default {
       }
     },
     /**
-		 * To get the news feed for the current page.
-		 * @function
-		 * @param {integer} pageNumber - The current page that we are retrieving results for.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the news feed for the current page.
+     * @function
+     * @param {integer} pageNumber - The current page that we are retrieving results for.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getNewsFeed (pageNumber) {
       this.displayNewsFeedData = true
       this.newsFeed = []
@@ -635,32 +637,32 @@ export default {
         })
     },
     /**
-		 * To toggle the create feed panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 * @memberof Users
-		 * @version 0.0.4
-		 */
+     * To toggle the create feed panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     * @memberof Users
+     * @version 0.0.4
+     */
     toggleCreateFeedPanel () {
       this.createFeedCollapse = !this.createFeedCollapse
     },
     /**
-		 * To clear the current search error.
-		 * @function
-		 * @returns {undefined}
-		 * @memberof Users
-		 * @version 0.0.4
-		 */
+     * To clear the current search error.
+     * @function
+     * @returns {undefined}
+     * @memberof Users
+     * @version 0.0.4
+     */
     clearCreateFeedError () {
       this.createFeedError = ''
     },
     /**
-		 * To clear the create feed form.
-		 * @function
-		 * @returns {undefined}
-		 * @memberof Users
-		 * @version 0.0.4
-		 */
+     * To clear the create feed form.
+     * @function
+     * @returns {undefined}
+     * @memberof Users
+     * @version 0.0.4
+     */
     resetForm () {
       this.newNewsFeed = {
         title: '',
@@ -672,10 +674,10 @@ export default {
       this.clearCreateFeedError()
     },
     /**
-		 * To check if the news feed information are valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the news feed information are valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateNewsFeedData () {
       var newsFeedVue = this
       return new Promise(function (resolve, reject) {
@@ -692,11 +694,11 @@ export default {
       })
     },
     /**
-		 * To prompt the backend call that creates a new news feed.
-		 * @function
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {object} A promise that will either return an error message or display the success screen
-		 */
+     * To prompt the backend call that creates a new news feed.
+     * @function
+     * @param {object} event - The click event that prompted this function.
+     * @returns {object} A promise that will either return an error message or display the success screen
+     */
     createNewsFeed (event) {
       var newsFeedVue = this
 
@@ -741,11 +743,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The News Feed has been created'
@@ -764,20 +766,20 @@ export default {
       })
     },
     /**
-		 * To show input fields instead of the plain text for news feed.
-		 * @function
-		 * @param {object} news - The news object to be edited
-		 * @returns {undefined}
-		 */
+     * To show input fields instead of the plain text for news feed.
+     * @function
+     * @param {object} news - The news object to be edited
+     * @returns {undefined}
+     */
     editNewsFeed (news) {
       this.showEditFeedModal = true
       this.selectedFeedId = news.id
     },
     /**
-		 * To close the edit feed modal and get the updated list of news feed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the edit feed modal and get the updated list of news feed
+     * @function
+     * @returns {undefined}
+     */
     closeEditFeedModal () {
       this.showEditFeedModal = false
     },
