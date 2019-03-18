@@ -170,7 +170,11 @@ export const actions = {
 
             for (const service of servicesResponse) {
               service.tax = 0
-              if (typeof service.declinedReasonId === 'number' && service.declinedReasonId > -1) {
+              if (
+                typeof service.declinedReasonId === 'number' &&
+                service.declinedReasonId > -1 &&
+                service.declinedReasonId !== 8
+              ) {
                 service.deferred = true
               } else {
                 service.deferred = false

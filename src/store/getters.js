@@ -192,20 +192,24 @@ export const getters = {
     for (const service of state.services) {
       if (service.subServices) {
         for (const subService of service.subServices) {
-          if (subService.category === '4') {
-            services.push(subService)
-          } else if (additional) {
-            if (!subService.deferred && !subService.isHighlighted) {
+          if (subService.declinedReasonId !== 8) {
+            if (subService.category === '4') {
               services.push(subService)
+            } else if (additional) {
+              if (!subService.deferred && !subService.isHighlighted) {
+                services.push(subService)
+              }
             }
           }
         }
       } else {
-        if (service.category === '4') {
-          services.push(service)
-        } else if (additional) {
-          if (!service.deferred && !service.isHighlighted) {
+        if (service.declinedReasonId !== 8) {
+          if (service.category === '4') {
             services.push(service)
+          } else if (additional) {
+            if (!service.deferred && !service.isHighlighted) {
+              services.push(service)
+            }
           }
         }
       }

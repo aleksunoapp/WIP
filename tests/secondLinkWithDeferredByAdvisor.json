@@ -1,5 +1,3 @@
-f9face76-c7d3-4f6c-81c8-57ee63d30928
-
 {
   "repairOrderId": "0",
   "tag": null,
@@ -402,7 +400,7 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
   "services": [
     {
       "serviceId": "10",
-      "itemId": "0",
+      "itemId": "10",
       "parentServiceId": "",
       "serviceCategoryId": "1",
       "laborPrice": 400,
@@ -452,7 +450,7 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
     },
     {
       "serviceId": "11",
-      "itemId": "1",
+      "itemId": "11",
       "parentServiceId": "",
       "serviceCategoryId": "1",
       "laborPrice": 0,
@@ -514,6 +512,56 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
       ]
     },
     {
+      "serviceId": "12",
+      "itemId": "12",
+      "parentServiceId": "",
+      "serviceCategoryId": "12",
+      "laborPrice": 0,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/238x517.png?text=Safety%20Concerns%20Service%2012",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": false,
+      "isHighlighted": false,
+      "declinedReasonId": 8,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "NA",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Safety Concerns Service 12",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Safety Concerns Service 12 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Safety Concerns Service 12 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Safety Concerns Service 12 (es-mx)"
+        }
+      ]
+    },
+    {
       "serviceId": "21",
       "itemId": "21",
       "parentServiceId": "",
@@ -522,7 +570,7 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
       "partsPrice": 0,
       "taxAndFee": 0,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/238x517.png?text=Safety%20Concerns%20Service%2021",
+      "topImageUrl": "https://via.placeholder.com/238x517.png?text=Items%20Requiring%20Attentions%2021",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -560,39 +608,39 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
           "name": "ES-Covered by warranty"
         }
       ],
-      "name": "Safety Concerns Service 21",
+      "name": "Items Requiring Attention Service 21",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 21 (en-CA)"
+          "name": "Items Requiring Attention Service 21 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 21 (fr-CA)"
+          "name": "Items Requiring Attention Service 21 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 21 (es-mx)"
+          "name": "Items Requiring Attention Service 21 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "22",
-      "itemId": "2",
+      "itemId": "22",
       "parentServiceId": "",
       "serviceCategoryId": "2",
       "laborPrice": 100,
       "partsPrice": 0,
       "taxAndFee": 15,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/374x306.png?text=Safety%20Concerns%20Service%2012",
+      "topImageUrl": "https://via.placeholder.com/374x306.png?text=Items%20Requiring%20Attentions%2012",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
       "mediaId": null,
       "isSelected": true,
       "isHighlighted": false,
-      "declinedReasonId": 2,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -610,39 +658,39 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
       ],
       "laborMatrixPayment": "NA",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 22",
+      "name": "Items Requiring Attention Service 22",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 22 (en-CA)"
+          "name": "Items Requiring Attention Service 22 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 22 (fr-CA)"
+          "name": "Items Requiring Attention Service 22 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 22 (es-mx)"
+          "name": "Items Requiring Attention Service 22 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "23",
-      "itemId": "3",
+      "itemId": "23",
       "parentServiceId": "",
       "serviceCategoryId": "2",
       "laborPrice": 0,
-      "partsPrice": 40,
+      "partsPrice": 40.50,
       "taxAndFee": 20,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Items%20Requiring%20Attentions%2013",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
       "mediaId": null,
-      "isSelected": false,
+      "isSelected": true,
       "isHighlighted": false,
-      "declinedReasonId": 3,
+      "declinedReasonId": -1,
       "iconUrl": null,
       "serviceAdvisorComments": [
         {
@@ -673,32 +721,132 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 23",
+      "name": "Items Requiring Attention Service 23",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 23 (en-CA)"
+          "name": "Items Requiring Attention Service 23 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 23 (fr-CA)"
+          "name": "Items Requiring Attention Service 23 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 23 (es-mx)"
+          "name": "Items Requiring Attention Service 23 (es-mx)"
+        }
+      ]
+    },
+    {
+      "serviceId": "24",
+      "itemId": "24",
+      "parentServiceId": "",
+      "serviceCategoryId": "2",
+      "laborPrice": 70,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Items%20Requiring%20Attentions%2024",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": false,
+      "isHighlighted": false,
+      "declinedReasonId": 8,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "None",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Items Requiring Attention Service 24",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Items Requiring Attention Service 24 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Items Requiring Attention Service 24 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Items Requiring Attention Service 24 (es-mx)"
+        }
+      ]
+    },
+    {
+      "serviceId": "25",
+      "itemId": "25",
+      "parentServiceId": "24",
+      "serviceCategoryId": "2",
+      "laborPrice": 90,
+      "partsPrice": 0,
+      "taxAndFee": 0,
+      "comment": "Comment text goes here",
+      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Items%20Requiring%20Attentions%2025",
+      "marketingText": "",
+      "marketingImageUrl": "",
+      "technicienId": null,
+      "mediaId": null,
+      "isSelected": false,
+      "isHighlighted": false,
+      "declinedReasonId": 8,
+      "iconUrl": null,
+      "serviceAdvisorComments": [
+        {
+          "culture": "en-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Service Advisor comments go here."
+        },
+        {
+          "culture": "es-MX",
+          "name": "Service Advisor comments go here."
+        }
+      ],
+      "laborMatrixPayment": "None",
+      "laborMatrixPaymentTranslations": null,
+      "name": "Items Requiring Attention Service 25",
+      "nameTranslations": [
+        {
+          "culture": "en-CA",
+          "name": "Items Requiring Attention Service 25 (en-CA)"
+        },
+        {
+          "culture": "fr-CA",
+          "name": "Items Requiring Attention Service 25 (fr-CA)"
+        },
+        {
+          "culture": "es-mx",
+          "name": "Items Requiring Attention Service 25 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "41",
-      "itemId": "3",
+      "itemId": "41",
       "parentServiceId": "",
       "serviceCategoryId": "4",
       "laborPrice": 0,
       "partsPrice": 30,
       "taxAndFee": 20,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Approved%20At%20Dealership%2013",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -736,25 +884,25 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 41",
+      "name": "Items Approved When You Checked Into Dealership Service 41",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 41 (en-CA)"
+          "name": "Items Approved When You Checked Into Dealership Service 41 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 41 (fr-CA)"
+          "name": "Items Approved When You Checked Into Dealership Service 41 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 41 (es-mx)"
+          "name": "Items Approved When You Checked Into Dealership Service 41 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "61",
-      "itemId": "4",
+      "itemId": "61",
       "parentServiceId": "",
       "serviceCategoryId": "6",
       "laborPrice": 0,
@@ -799,7 +947,7 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 61",
+      "name": "Customer Concerns Service 61",
       "nameTranslations": [
         {
           "culture": "en-CA",
@@ -817,14 +965,14 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
     },
     {
       "serviceId": "62",
-      "itemId": "4",
+      "itemId": "62",
       "parentServiceId": "61",
       "serviceCategoryId": "6",
       "laborPrice": 0,
       "partsPrice": 40,
       "taxAndFee": 20,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/291x505.png?text=Safety%20Concerns%20Service%2014",
+      "topImageUrl": "https://via.placeholder.com/291x505.png?text=Customer%20Concerns%20Service%2014",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -862,32 +1010,32 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 62",
+      "name": "Customer Concerns Service 62",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 62 (en-CA)"
+          "name": "Customer Concerns Service 62 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 62 (fr-CA)"
+          "name": "Customer Concerns Service 62 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 62 (es-mx)"
+          "name": "Customer Concerns Service 62 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "81",
-      "itemId": "5",
+      "itemId": "81",
       "parentServiceId": "",
       "serviceCategoryId": "8",
       "laborPrice": 0,
       "partsPrice": 40,
       "taxAndFee": 20,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+      "topImageUrl": "https://via.placeholder.com/544x532.png?text=Customer%20Concerns%20Service%2015",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -912,32 +1060,32 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 81",
+      "name": "Customer Concerns Service 81",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 81 (en-CA)"
+          "name": "Customer Concerns Service 81 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 81 (fr-CA)"
+          "name": "Customer Concerns Service 81 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 81 (es-mx)"
+          "name": "Customer Concerns Service 81 (es-mx)"
         }
       ]
     },
     {
       "serviceId": "82",
-      "itemId": "5",
+      "itemId": "82",
       "parentServiceId": "82",
       "serviceCategoryId": "8",
       "laborPrice": 0,
       "partsPrice": 40,
       "taxAndFee": 20,
       "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+      "topImageUrl": "https://via.placeholder.com/544x532.png?text=Customer%20Concerns%20Service%2015",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -962,19 +1110,19 @@ f9face76-c7d3-4f6c-81c8-57ee63d30928
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 82",
+      "name": "Customer Concerns Service 82",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 82 (en-CA)"
+          "name": "Customer Concerns Service 82 (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 82 (fr-CA)"
+          "name": "Customer Concerns Service 82 (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 82 (es-mx)"
+          "name": "Customer Concerns Service 82 (es-mx)"
         }
       ]
     }
