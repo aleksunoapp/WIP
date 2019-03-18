@@ -98,11 +98,10 @@ export default Vue.extend({
   },
   created () {
     this.setSlug(this.$route.params.slug)
-    this.getMetadata()
     if (this.$route.query.secret) {
       this.code = this.$route.query.secret
-      this.logIn()
     }
+    this.getMetadata()
     this.logEvent('Started viewing login page')
   },
   beforeDestroy () {

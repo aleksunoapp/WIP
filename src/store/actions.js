@@ -78,6 +78,11 @@ export const actions = {
         commit('setTopImageUrl', topImageUrl || '')
         dispatch('routeAfterMetadata')
       })
+      .then(() => {
+        if (state.code) {
+          dispatch('logIn')
+        }
+      })
       .catch((error) => {
         dispatch('handleError', error)
       })
