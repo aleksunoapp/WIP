@@ -1,3 +1,7 @@
+<!--
+  https://trello.com/c/njNcSpxI/169-pita-pit-bugs-07012019 item 9
+-->
+
 <template>
   <div
     slot="modal-body"
@@ -138,17 +142,25 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
   props: {
     /**
-         * @property {array} previouslySelected - An array of SKU strings of previously selected items
-         */
+     * @property {array} previouslySelected - An array of SKU strings of previously selected items
+     */
     previouslySelected: {
       type: Array,
       default: () => [],
       required: false
     },
     /**
-     * @property {boolean} single - Displays item's SKU below the item
+     * @property {boolean} showSku - Displays item's SKU below the item
      */
     showSku: {
+      type: Boolean,
+      default: () => false,
+      required: false
+    },
+    /**
+     * @property {boolean} useIds - emit IDs intead of SKUs
+     */
+    useIds: {
       type: Boolean,
       default: () => false,
       required: false
@@ -194,38 +206,51 @@ export default {
   },
   methods: {
     /**
-		 * To clear an error.
-		 * @function
-		 * @param {string} name - Name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error.
+     * @function
+     * @param {string} name - Name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To close the modal.
-		 * @function
-		 * @param {object} item - The item toggled by the user
-		 * @returns {undefined}
-		 */
+     * To close the modal.
+     * @function
+     * @param {object} item - The item toggled by the user
+     * @returns {undefined}
+     */
     itemsSelected (item) {
       if (!item.selected) {
-        const previousIndex = this.previous.indexOf(item.sku)
+        let previousIndex
+        if (this.useIds) {
+          previousIndex = this.previous.indexOf(item.id)
+        } else {
+          previousIndex = this.previous.indexOf(item.sku)
+        }
         if (previousIndex !== -1) {
           this.previous.splice(previousIndex, 1)
         }
       }
-      const selected = [
-        ...this.previous.map(sku => ({ previous: true, sku, name: '' })),
-        ...this.selectedItems.filter(item => !this.previous.includes(item.sku))
-      ]
+      let selected = []
+      if (this.useIds) {
+        selected = [
+          ...this.previous.map(id => ({ previous: true, id, name: '' })),
+          ...this.selectedItems.filter(item => !this.previous.includes(item.id))
+        ]
+      } else {
+        selected = [
+          ...this.previous.map(sku => ({ previous: true, sku, name: '' })),
+          ...this.selectedItems.filter(item => !this.previous.includes(item.sku))
+        ]
+      }
       this.$emit('update', selected)
     },
     /**
-		 * To get a list of all modifiers for the current active location.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all modifiers for the current active location.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getModifiers () {
       if (this.$root.activeLocation.id === undefined) {
         this.errorMessage = 'Please select a store to view Modifiers.'
@@ -262,10 +287,10 @@ export default {
         })
     },
     /**
-		 * To get a list of all item for the current active modifier category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all item for the current active modifier category.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemsForActiveModifier () {
       this.loadingModifierItems = true
       var modifierTreeVue = this
@@ -276,10 +301,18 @@ export default {
         modifierTreeVue.$root.appSecret
       )
         .then(response => {
-          modifierTreeVue.activeModifier.items = response.payload.map(item => ({
-            ...item,
-            selected: modifierTreeVue.previous.includes(item.sku)
-          }))
+          modifierTreeVue.activeModifier.items = response.payload.map(item => {
+            let selected
+            if (modifierTreeVue.useIds) {
+              selected = modifierTreeVue.previous.includes(item.id)
+            } else {
+              selected = modifierTreeVue.previous.includes(item.sku)
+            }
+            return {
+              ...item,
+              selected
+            }
+          })
         })
         .catch(reason => {
           ajaxErrorHandler({
@@ -295,19 +328,19 @@ export default {
         })
     },
     /**
-		 * To clear the items array.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the items array.
+     * @function
+     * @returns {undefined}
+     */
     clearItems () {
       this.items = []
     },
     /**
-		 * To set the value of the variable 'activeModifier' as the selected modifier object.
-		 * @function
-		 * @param {object} modifier - The selected modifier.
-		 * @returns {undefined}
-		 */
+     * To set the value of the variable 'activeModifier' as the selected modifier object.
+     * @function
+     * @param {object} modifier - The selected modifier.
+     * @returns {undefined}
+     */
     selectModifier (modifier) {
       this.activeModifier = modifier
       this.isModifierCategorySelected = true

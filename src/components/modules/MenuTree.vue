@@ -104,7 +104,6 @@
 // import $ from 'jquery'
 import Modal from './Modal'
 import ModifiersFunctions from '../../controllers/Modifiers'
-import TagsFunctions from '../../controllers/Tags'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
@@ -157,36 +156,36 @@ export default {
   },
   methods: {
     /**
-		 * To update the selection of items.
-		 * @function
-		 * @param {array} selected - Array of selected items
-		 * @returns {undefined}
-		 */
+     * To update the selection of items.
+     * @function
+     * @param {array} selected - Array of selected items
+     * @returns {undefined}
+     */
     itemsSelected (selected) {
       this.items = selected
     },
     /**
-		 * To close the modal.
-		 * @function
-		 * @param {object} payload - payload property of the server response
-		 * @returns {undefined}
-		 */
+     * To close the modal.
+     * @function
+     * @param {object} payload - payload property of the server response
+     * @returns {undefined}
+     */
     closeModal (payload) {
       this.$emit('closeMenuTreeModal', payload)
     },
     /**
-		 * To notify parent error should be cleared.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To notify parent error should be cleared.
+     * @function
+     * @returns {undefined}
+     */
     clearError () {
       this.$emit('clearError')
     },
     /**
-		 * To apply the selected modifier to all the checked off menu items.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To apply the selected modifier to all the checked off menu items.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     applyModifierToSelectedItems () {
       var menuTreeVue = this
       var selectedItems = []
@@ -223,81 +222,17 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showApplyToItemsSuccess (payload = {}) {
       if (payload === null) {
         payload = {}
       }
       let title = 'Success'
       let text = 'The Modifier has been saved'
-      let type = 'success'
-
-      if (payload && payload.pending_approval) {
-        title = 'Approval Required'
-        text = 'The changes have been sent for approval'
-        type = 'info'
-      }
-
-      this.$swal({
-        title,
-        text,
-        type
-      })
-    },
-    /**
-		 * To apply the selected tag to all the checked off menu items.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-    applyTagToSelectedItems () {
-      var menuTreeVue = this
-      var selectedItems = []
-      var unselectedItems = []
-      for (var i = 0; i < menuTreeVue.items.length; i++) {
-        if (menuTreeVue.items[i].selected) {
-          selectedItems.push(menuTreeVue.items[i].id)
-        } else {
-          unselectedItems.push(menuTreeVue.items[i].id)
-        }
-      }
-      TagsFunctions.applyTagToMultipleItems(
-        menuTreeVue.selectedObject.id,
-        selectedItems,
-        unselectedItems,
-        menuTreeVue.$root.appId,
-        menuTreeVue.$root.appSecret,
-        menuTreeVue.$root.userToken
-      )
-        .then(response => {
-          if (response.code === 200 && response.status === 'ok') {
-            menuTreeVue.closeModal()
-            menuTreeVue.showApplyToTagsSuccess(response.payload)
-          }
-        })
-        .catch(reason => {
-          ajaxErrorHandler({
-            reason,
-            errorText: 'We could not apply the tag',
-            errorName: 'errorMessage',
-            vue: menuTreeVue,
-            containerRef: 'modal'
-          })
-        })
-    },
-    /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
-    showApplyToTagsSuccess (payload = {}) {
-      if (payload === null) payload = {}
-      let title = 'Success'
-      let text = 'The Tag has been saved'
       let type = 'success'
 
       if (payload && payload.pending_approval) {
@@ -347,15 +282,13 @@ export default {
       this.$emit('selectedItems', { selectedItems, unselectedItems })
     },
     /**
-		 * To determine which function to call based on the update type passed in by the parent as a prop.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To determine which function to call based on the update type passed in by the parent as a prop.
+     * @function
+     * @returns {undefined}
+     */
     applySelectedItems () {
       if (this.updateType === 'modifier') {
         this.applyModifierToSelectedItems()
-      } else if (this.updateType === 'tag') {
-        this.applyTagToSelectedItems()
       } else if (this.updateType === 'sku') {
         this.applyItemSKUToRewardItem()
       } else if (this.updateType === 'promocode') {

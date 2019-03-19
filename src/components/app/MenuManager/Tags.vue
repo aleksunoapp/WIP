@@ -225,7 +225,7 @@
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
-                      @click.stop="displayMenuTreeModal(tag)"
+                      @click.stop="openApplyTagToMenuItemsByIdModal(tag)"
                     >
                       <i class="fa fa-lg fa-crosshairs" />
                     </a>
@@ -279,12 +279,10 @@
       :tag="selectedTag"
       @close="closeApplyTagToModifierItemsModal()"
     />
-    <menu-tree
-      v-if="showMenuTreeModal"
-      :selected-object="selectedTag"
-      :header-text="headerText"
-      :update-type="'tag'"
-      @closeMenuTreeModal="closeMenuTreeModal"
+    <apply-tag-to-menu-items-by-id
+      v-if="showApplyTagToMenuItemsByIdModal"
+      :tag="selectedTag"
+      @close="closeMenuTreeModal()"
     />
   </div>
 </template>
@@ -295,7 +293,7 @@ import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import ApplyTagToMenuItems from '@/components/app/MenuManager/Tags/ApplyTagToMenuItems'
 import ApplyTagToModifierItems from '@/components/app/MenuManager/Tags/ApplyTagToModifierItems'
-import MenuTree from '@/components/modules/MenuTree'
+import ApplyTagToMenuItemsById from '@/components/app/MenuManager/Tags/ApplyTagToMenuItemsById'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TagsFunctions from '../../../controllers/Tags'
 import EditTag from './Tags/EditTag'
@@ -308,12 +306,12 @@ export default {
   components: {
     ApplyTagToMenuItems,
     ApplyTagToModifierItems,
+    ApplyTagToMenuItemsById,
     Breadcrumb,
     DishIcon,
     EditTag,
     ExtrasAndSidesIcon,
     LoadingScreen,
-    MenuTree,
     NoResults,
     ResourcePicker
   },
@@ -338,23 +336,24 @@ export default {
       showApplyTagToMenuItemsModal: false,
       showApplyTagToModifierItemsModal: false,
       selectedTag: {},
-      headerText: '',
       imageMode: {
         newMenu: false
       },
-      showMenuTreeModal: false
+      showApplyTagToMenuItemsByIdModal: false
     }
   },
   computed: {
     ...mapGetters(['can']),
     tagTypeLabel () {
+      let label = 'Select Tag type'
       if (!this.newTag.type) {
-        return 'Select Tag type'
+        label = 'Select Tag type'
       } else if (this.newTag.type === 'contains') {
-        return 'contains'
+        label = 'contains'
       } else if (this.newTag.type === 'may_contain') {
-        return 'may contain'
+        label = 'may contain'
       }
+      return label
     }
   },
   mounted () {
@@ -438,10 +437,10 @@ export default {
      * @param {object} tag - The selected tag.
      * @returns {undefined}
      */
-    displayMenuTreeModal (tag) {
+
+    openApplyTagToMenuItemsByIdModal (tag) {
       this.selectedTag = tag
-      this.headerText = "Tag '" + this.selectedTag.name + "'"
-      this.showMenuTreeModal = true
+      this.showApplyTagToMenuItemsByIdModal = true
     },
     /**
      * To close the menu tree modal.
@@ -449,7 +448,7 @@ export default {
      * @returns {undefined}
      */
     closeMenuTreeModal () {
-      this.showMenuTreeModal = false
+      this.showApplyTagToMenuItemsByIdModal = false
     },
     /**
      * To get the list of available tags.

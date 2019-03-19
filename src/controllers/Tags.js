@@ -233,19 +233,13 @@ export default {
    * @param {integer} tagId - The id of the selected tag.
    * @param {array} itemsToAdd - The array of ids of selected items.
    * @param {array} itemsToRemove - The array of ids of unselected items.
-   * @param {string} appId - The appId of the current application.
-   * @param {string} appSecret - The appSecret of the current application.
-   * @param {string} userToken - The token of the current logged in user.
    * @returns {object} A promise that will return either a success object or an error object.
    */
-  applyTagToMultipleItems (
+  applyTagToMultipleItems ({
     tagId,
     itemsToAdd,
-    itemsToRemove,
-    appId,
-    appSecret,
-    userToken
-  ) {
+    itemsToRemove = []
+  }) {
     return new Promise(function (resolve, reject) {
       GlobalFunctions.$ajax({
         method: 'POST',
@@ -254,11 +248,6 @@ export default {
         data: {
           items_to_add: itemsToAdd,
           items_to_remove: itemsToRemove
-        },
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader('auth-token', userToken)
-          xhr.setRequestHeader('app-id', appId)
-          xhr.setRequestHeader('app-secret', appSecret)
         },
         success: function (response) {
           resolve(response)
