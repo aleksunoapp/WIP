@@ -484,12 +484,9 @@ export default {
         modifier_items_to_add: selectedModifierItems,
         modifier_items_to_remove: unselectedModifierItems
       }
-      OptionsFunctions.applyOptionToMultipleModItems(
-        modifierTreeVue.selectedObject.id,
-        payload,
-        modifierTreeVue.$root.appId,
-        modifierTreeVue.$root.appSecret,
-        modifierTreeVue.$root.userToken
+      OptionsFunctions.applyOptionToMultipleModifierItems(
+        { optionId: modifierTreeVue.selectedObject.id,
+          payload }
       )
         .then(response => {
           if (response.code === 200 && response.status === 'ok') {
