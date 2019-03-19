@@ -128,9 +128,14 @@ export const mutations = {
       service.tax = tax
     }
   },
-  setTax (state, tax) {
+  setPreviouslyApprovedTax (state, tax) {
     if (typeof tax === 'number') {
-      state.tax = tax
+      state.tax.previouslyApproved = tax
+    }
+  },
+  setNewlyApprovedTax (state, tax) {
+    if (typeof tax === 'number') {
+      state.tax.newlyApproved = tax
     }
   },
   setError (state, error) {

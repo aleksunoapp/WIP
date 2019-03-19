@@ -120,6 +120,7 @@ const enCA = {
   please_select_a_reason: 'Please select a reason for deferring this service',
   // summary
   service_summary: 'Service Summary',
+  services_approved_at_dealership: 'Items you approved when you checked into the dealership',
   previously_approved_services: 'Previously approved services',
   taxes_and_fees_included: 'taxes and fees included',
   estimate: 'Estimate for selected services',
@@ -231,6 +232,7 @@ const frCA = {
   please_select_a_reason: 'Veuillez indiquer la raison pour laquelle vous souhaitez différer ce service',
   // summary
   service_summary: 'Récapitulatif de l\'entretien',
+  services_approved_at_dealership: 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire',
   previously_approved_services: 'Services précédemment approuvés',
   taxes_and_fees_included: 'taxes et frais inclus',
   estimate: 'Coût estimatif pour les services sélectionnés',
@@ -342,6 +344,7 @@ const esMX = {
   please_select_a_reason: 'Seleccione un motivo para diferir este servicio',
   // summary
   service_summary: 'Resumen del servicio',
+  services_approved_at_dealership: 'Servicios que usted aprobó cuando se registró en el concesionario',
   previously_approved_services: 'Servicios aprobados previamente',
   taxes_and_fees_included: 'incluye impuestos y tasas',
   estimate: 'Presupuesto por servicios seleccionados',

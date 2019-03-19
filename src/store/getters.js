@@ -216,6 +216,9 @@ export const getters = {
     }
     return services
   },
+  servicesApprovedAtDealership: (state, getters) => {
+    return getters.categoryServices('4')
+  },
   respondBy: (state) => {
     return state.deadlines.respondBy === null ? null : new Date(state.deadlines.respondBy)
   },

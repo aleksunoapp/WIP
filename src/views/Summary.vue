@@ -5,8 +5,70 @@
         id="summary"
         class="card"
       >
+        <!-- SERVICES APPROVED AT DEALERSHIP -->
         <div
-          v-if="count.approved"
+          v-if="servicesApprovedAtDealership.length"
+          class="row"
+        >
+          <div class="previous">
+            <p class="item">
+              {{ $t("services_approved_at_dealership") }}
+              <span
+                v-if="$route.name === 'additional-summary'"
+                class="bold"
+              >
+                ({{ servicesApprovedAtDealership.length }})
+              </span>
+              <span class="taxes">
+                {{ $t("taxes_and_fees_included") }}
+              </span>
+            </p>
+            <button
+              class="toggle"
+              @click="toggleApprovedAtDealership()"
+            >
+              <img
+                class="chevron"
+                :class="{'open' : approvedAtDealershipExpanded}"
+                src="@/assets/images/chevron-down.svg"
+                aria-hidden="true"
+              >
+            </button>
+          </div>
+          <p class="price">
+            {{ servicesApprovedAtDealershipTotal }}
+          </p>
+        </div>
+        <transition-height>
+          <div
+            v-if="approvedAtDealershipExpanded"
+            class="list"
+          >
+            <div
+              v-for="service in servicesApprovedAtDealership"
+              :key="service.id"
+              class="row"
+            >
+              <p class="item">
+                {{ service.name }}
+              </p>
+              <p
+                v-if="getServiceDisplayPrice(service)"
+                class="price"
+              >
+                {{ getServiceDisplayPrice(service) }}
+              </p>
+            </div>
+          </div>
+        </transition-height>
+        <div
+          v-if="servicesApprovedAtDealership.length"
+          class="divider"
+        />
+
+        <!-- PREVIOUSLY APPROVED SERVICES -->
+        <div
+          v-if="previouslyApprovedServices.length"
           class="row"
         >
           <div class="previous">
@@ -18,29 +80,26 @@
               >
                 ({{ previouslyApprovedServices.length }})
               </span>
-              <span class="taxes">
-                {{ $t("taxes_and_fees_included") }}
-              </span>
             </p>
             <button
               class="toggle"
-              @click="previousExpanded = !previousExpanded"
+              @click="togglePreviouslyApproved()"
             >
               <img
                 class="chevron"
-                :class="{'open' : previousExpanded}"
+                :class="{'open' : previouslyApprovedExpanded}"
                 src="@/assets/images/chevron-down.svg"
                 aria-hidden="true"
               >
             </button>
           </div>
           <p class="price">
-            {{ previousTotal }}
+            {{ previouslyApprovedServicesTotal }}
           </p>
         </div>
         <transition-height>
           <div
-            v-if="previousExpanded"
+            v-if="previouslyApprovedExpanded"
             class="list"
           >
             <div
@@ -60,10 +119,36 @@
             </div>
           </div>
         </transition-height>
+        <div class="divider" />
+        <div
+          class="row indented"
+        >
+          <p class="item">
+            {{ $t("additional_taxes_and_fees") }}
+          </p>
+          <p class="price">
+            <template v-if="loading.getTax">
+              <dot-dot-dot-spinner />
+            </template>
+            <template v-else>
+              {{ previouslyApprovedTax }}
+            </template>
+          </p>
+        </div>
+        <div class="row bold indented pretax">
+          <p class="item">
+            {{ $t("total") }}
+          </p>
+          <p class="price">
+            {{ newlyApproved.total }}
+          </p>
+        </div>
         <div
           v-if="previouslyApprovedServices.length"
           class="divider"
         />
+
+        <!-- NEWLY APPROVED SERVICES -->
         <template v-if="$route.name === 'summary'">
           <div class="row bold">
             <p class="item">
@@ -80,7 +165,12 @@
               {{ $t("additional_taxes_and_fees") }}
             </p>
             <p class="price">
-              {{ tax }}
+              <template v-if="loading.getTax">
+                <dot-dot-dot-spinner />
+              </template>
+              <template v-else>
+                {{ tax.previouslyApproved }}
+              </template>
             </p>
           </div>
         </template>
@@ -108,7 +198,12 @@
               {{ $t("additional_taxes_and_fees") }}
             </p>
             <p class="price">
-              {{ tax }}
+              <template v-if="loading.getTax">
+                <dot-dot-dot-spinner />
+              </template>
+              <template v-else>
+                {{ newlyApproved.tax }}
+              </template>
             </p>
           </div>
           <div class="row bold indented pretax">
@@ -130,6 +225,8 @@
           </p>
         </div>
       </div>
+
+      <!-- SIGNATURE -->
       <div
         v-if="count.actionable"
         class="divider"
@@ -206,6 +303,8 @@
           </p>
         </label>
       </div>
+
+      <!-- ERROR -->
       <div class="error">
         <transition-height>
           <p
@@ -216,6 +315,8 @@
           </p>
         </transition-height>
       </div>
+
+      <!-- BUTTON -->
       <button
         class="button cta green"
         :disabled="loading.sendServices"
@@ -231,6 +332,7 @@
 import Vue from 'vue'
 import Pad from 'signature_pad'
 import TransitionHeight from '@/components/TransitionHeight.vue'
+import DotDotDotSpinner from '@/components/DotDotDotSpinner.vue'
 import Hammer from 'hammerjs'
 import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import { getTotal, formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
@@ -238,6 +340,7 @@ import { getTotal, formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 export default Vue.extend({
   name: 'Summary',
   components: {
+    DotDotDotSpinner,
     TransitionHeight
   },
   mixins: [getTotal, formatCurrency, getServiceDisplayPrice],
@@ -246,7 +349,8 @@ export default Vue.extend({
     panned: false,
     printed: false,
     error: false,
-    previousExpanded: false
+    approvedAtDealershipExpanded: false,
+    previouslyApprovedExpanded: false
   }),
   computed: {
     accepted: {
@@ -273,9 +377,13 @@ export default Vue.extend({
       'categoryServices',
       'additionalServices',
       'deferredServices',
-      'previouslyApprovedServices'
+      'previouslyApprovedServices',
+      'servicesApprovedAtDealership'
     ]),
-    previousTotal () {
+    servicesApprovedAtDealershipTotal () {
+      return this.formatCurrency(this.getTotal(this.servicesApprovedAtDealership))
+    },
+    previouslyApprovedServicesTotal () {
       return this.formatCurrency(this.getTotal(this.previouslyApprovedServices))
     },
     newlyApproved () {
@@ -287,8 +395,9 @@ export default Vue.extend({
       let total = this.getTotal(services)
 
       return {
+        tax: this.formatCurrency(this.$store.state.tax.newlyApproved),
         count: services.length,
-        total: this.formatCurrency(total + this.$store.state.tax),
+        total: this.formatCurrency(total + this.$store.state.tax.previouslyApproved),
         preTaxTotal: this.formatCurrency(total),
         services
       }
@@ -306,16 +415,16 @@ export default Vue.extend({
       }
       return total
     },
-    tax () {
-      return this.formatCurrency(this.$store.state.tax)
+    previouslyApprovedTax () {
+      return this.formatCurrency(this.$store.state.tax.previouslyApproved)
     },
     total () {
       let total = ''
       if (this.$route.name === 'summary') {
-        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax.previouslyApproved)
       }
       if (this.$route.name === 'additional-summary') {
-        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax.previouslyApproved)
       }
       return total
     }
@@ -341,6 +450,12 @@ export default Vue.extend({
     ...mapActions({
       sendServices: 'sendServices'
     }),
+    toggleApprovedAtDealership () {
+      this.approvedAtDealershipExpanded = !this.approvedAtDealershipExpanded
+    },
+    togglePreviouslyApproved () {
+      this.previouslyApprovedExpanded = !this.previouslyApprovedExpanded
+    },
     clear () {
       if (!this.pad.isEmpty() || this.panned) {
         const context = this.$refs.canvas.getContext('2d')

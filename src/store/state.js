@@ -69,7 +69,10 @@ export const state = {
   services: [],
   signature: null,
   slug: '',
-  tax: 0,
+  tax: {
+    previouslyApproved: 0,
+    newlyApproved: 0
+  },
   token: '',
   topImageUrl: ''
 }

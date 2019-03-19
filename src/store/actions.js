@@ -127,9 +127,11 @@ export const actions = {
     const previouslyApprovedServiceIds = getters.previouslyApprovedServices.map(service => service.id)
     selectedServiceIds = selectedServiceIds.filter(id => !previouslyApprovedServiceIds.includes(id))
     commit('setLoading', { key: 'getTax', loading: true })
-    await fetchTax(selectedServiceIds)
-      .then((response) => {
-        commit('setTax', response.taxAndFee)
+    Promise.all(fetchTax(selectedServiceIds), fetchTax(selectedServiceIds))
+      .then((responses) => {
+        const [newlyApprovedServicesTaxResponse, previouslyApprovedServicesTaxResponse] = responses
+        commit('setNewlyApprovedTax', newlyApprovedServicesTaxResponse.taxAndFee)
+        commit('setPreviouslyApprovedTax', previouslyApprovedServicesTaxResponse.taxAndFee)
       })
       .catch((error) => {
         error.message = i18n.t('we_couldnt_get_tax')
