@@ -252,12 +252,12 @@ export const getters = {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
                 if (subService.isSelected) {
-                  inspectionTotal += subService.price + subService.tax
+                  inspectionTotal += subService.price
                 }
               })
             } else {
               if (service.isSelected) {
-                inspectionTotal += service.price + service.tax
+                inspectionTotal += service.price
               }
             }
           }
@@ -269,10 +269,10 @@ export const getters = {
           if (service.category === '4') {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
-                serviceTotal += subService.price + subService.tax
+                serviceTotal += subService.price
               })
             } else {
-              serviceTotal += service.price + service.tax
+              serviceTotal += service.price
             }
           }
         })
@@ -289,7 +289,7 @@ export const getters = {
             if (service.subServices) {
               service.subServices.forEach((subService) => {
                 if (subService.isSelected) {
-                  inspectionTotal += subService.price + subService.tax
+                  inspectionTotal += subService.price
                 }
               })
             }
@@ -301,7 +301,7 @@ export const getters = {
     for (const category of getters.categoriesShown) {
       for (const service of getters.categoryServicesShownOnRoute(category.id)) {
         if (service.isSelected) {
-          additionalTotal += service.price + service.tax
+          additionalTotal += service.price
         }
       }
     }
