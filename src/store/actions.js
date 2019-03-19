@@ -157,7 +157,6 @@ export const actions = {
             const parentServices = []
 
             for (const service of servicesResponse) {
-              service.tax = 0
               if (
                 typeof service.declinedReasonId === 'number' &&
                 service.declinedReasonId > -1 &&

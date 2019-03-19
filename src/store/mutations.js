@@ -123,11 +123,6 @@ export const mutations = {
   setAdvisor (state, advisor) {
     state.advisor = advisor
   },
-  setServiceTax (state, { service, tax }) {
-    if (typeof tax === 'number') {
-      service.tax = tax
-    }
-  },
   setPreviouslyApprovedTax (state, tax) {
     if (typeof tax === 'number') {
       state.tax.previouslyApproved = tax
