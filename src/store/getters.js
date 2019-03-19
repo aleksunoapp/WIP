@@ -189,27 +189,27 @@ export const getters = {
   previouslyApprovedServices: (state, getters) => {
     const additional = getters.additionalServices.length > 0
     const services = []
-    for (const service of state.services) {
-      if (service.subServices) {
-        for (const subService of service.subServices) {
-          if (subService.declinedReasonId !== 8) {
-            if (subService.category === '4') {
+    if (additional) {
+      for (const service of state.services) {
+        if (service.subServices) {
+          for (const subService of service.subServices) {
+            if (
+              !subService.deferred &&
+              !subService.isHighlighted &&
+              subService.category !== '4' &&
+              subService.declinedReasonId !== 8
+            ) {
               services.push(subService)
-            } else if (additional) {
-              if (!subService.deferred && !subService.isHighlighted) {
-                services.push(subService)
-              }
             }
           }
-        }
-      } else {
-        if (service.declinedReasonId !== 8) {
-          if (service.category === '4') {
+        } else {
+          if (
+            !service.deferred &&
+            !service.isHighlighted &&
+            service.category !== '4' &&
+            service.declinedReasonId !== 8
+          ) {
             services.push(service)
-          } else if (additional) {
-            if (!service.deferred && !service.isHighlighted) {
-              services.push(service)
-            }
           }
         }
       }

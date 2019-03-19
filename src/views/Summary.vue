@@ -7,7 +7,7 @@
       >
         <!-- SERVICES APPROVED AT DEALERSHIP -->
         <div
-          v-if="servicesApprovedAtDealership.length"
+          v-if="approvedAtDealership.count"
           class="row"
         >
           <div class="previous">
@@ -17,7 +17,7 @@
                 v-if="$route.name === 'additional-summary'"
                 class="bold"
               >
-                ({{ servicesApprovedAtDealership.length }})
+                ({{ approvedAtDealership.count }})
               </span>
               <span class="taxes">
                 {{ $t("taxes_and_fees_included") }}
@@ -36,7 +36,7 @@
             </button>
           </div>
           <p class="price">
-            {{ servicesApprovedAtDealershipTotal }}
+            {{ approvedAtDealership.total }}
           </p>
         </div>
         <transition-height>
@@ -66,96 +66,13 @@
           class="divider"
         />
 
-        <!-- PREVIOUSLY APPROVED SERVICES -->
-        <div
-          v-if="previouslyApprovedServices.length"
-          class="row"
-        >
-          <div class="previous">
-            <p class="item">
-              {{ $t("previously_approved_services") }}
-              <span
-                v-if="$route.name === 'additional-summary'"
-                class="bold"
-              >
-                ({{ previouslyApprovedServices.length }})
-              </span>
-            </p>
-            <button
-              class="toggle"
-              @click="togglePreviouslyApproved()"
-            >
-              <img
-                class="chevron"
-                :class="{'open' : previouslyApprovedExpanded}"
-                src="@/assets/images/chevron-down.svg"
-                aria-hidden="true"
-              >
-            </button>
-          </div>
-          <p class="price">
-            {{ previouslyApprovedServicesTotal }}
-          </p>
-        </div>
-        <transition-height>
-          <div
-            v-if="previouslyApprovedExpanded"
-            class="list"
-          >
-            <div
-              v-for="service in previouslyApprovedServices"
-              :key="service.id"
-              class="row"
-            >
-              <p class="item">
-                {{ service.name }}
-              </p>
-              <p
-                v-if="getServiceDisplayPrice(service)"
-                class="price"
-              >
-                {{ getServiceDisplayPrice(service) }}
-              </p>
-            </div>
-          </div>
-        </transition-height>
-        <div class="divider" />
-        <div
-          class="row indented"
-        >
-          <p class="item">
-            {{ $t("additional_taxes_and_fees") }}
-          </p>
-          <p class="price">
-            <template v-if="loading.getTax">
-              <dot-dot-dot-spinner />
-            </template>
-            <template v-else>
-              {{ previouslyApprovedTax }}
-            </template>
-          </p>
-        </div>
-        <div class="row bold indented pretax">
-          <p class="item">
-            {{ $t("total") }}
-          </p>
-          <p class="price">
-            {{ newlyApproved.total }}
-          </p>
-        </div>
-        <div
-          v-if="previouslyApprovedServices.length"
-          class="divider"
-        />
-
-        <!-- NEWLY APPROVED SERVICES -->
         <template v-if="$route.name === 'summary'">
           <div class="row bold">
             <p class="item">
               {{ $t("estimate") }}
             </p>
             <p class="price">
-              {{ displayTotal }}
+              {{ formatCurrency(this.$store.getters.total.inspection) }}
             </p>
           </div>
           <div
@@ -165,16 +82,98 @@
               {{ $t("additional_taxes_and_fees") }}
             </p>
             <p class="price">
-              <template v-if="loading.getTax">
-                <dot-dot-dot-spinner />
-              </template>
-              <template v-else>
-                {{ tax.previouslyApproved }}
-              </template>
+              {{ formatCurrency(this.$store.state.tax.newlyApproved) }}
             </p>
           </div>
         </template>
         <template v-if="$route.name === 'additional-summary'">
+          <!-- PREVIOUSLY APPROVED SERVICES -->
+          <div
+            v-if="previouslyApproved.count"
+            class="row"
+          >
+            <div class="previous">
+              <p class="item">
+                {{ $t("previously_approved_services") }}
+                <span
+                  class="bold"
+                >
+                  ({{ previouslyApproved.count }})
+                </span>
+              </p>
+              <button
+                class="toggle"
+                @click="togglePreviouslyApproved()"
+              >
+                <img
+                  class="chevron"
+                  :class="{'open' : previouslyApprovedExpanded}"
+                  src="@/assets/images/chevron-down.svg"
+                  aria-hidden="true"
+                >
+              </button>
+            </div>
+            <p class="price">
+              {{ previouslyApproved.preTax }}
+            </p>
+          </div>
+          <transition-height>
+            <div
+              v-if="previouslyApprovedExpanded"
+              class="list"
+            >
+              <div
+                v-for="service in previouslyApproved.services"
+                :key="service.id"
+                class="row"
+              >
+                <p class="item">
+                  {{ service.name }}
+                </p>
+                <p
+                  v-if="getServiceDisplayPrice(service)"
+                  class="price"
+                >
+                  {{ getServiceDisplayPrice(service) }}
+                </p>
+              </div>
+            </div>
+          </transition-height>
+          <div class="divider" />
+          <div
+            class="row indented"
+          >
+            <p class="item">
+              {{ $t("additional_taxes_and_fees") }}
+            </p>
+            <p class="price">
+              <template v-if="loading.getTax">
+                <dot-dot-dot-spinner />
+              </template>
+              <template v-else>
+                {{ previouslyApproved.tax }}
+              </template>
+            </p>
+          </div>
+          <div class="row bold indented pretax">
+            <p class="item">
+              {{ $t("total") }}
+            </p>
+            <p class="price">
+              <template v-if="loading.getTax">
+                <dot-dot-dot-spinner />
+              </template>
+              <template v-else>
+                {{ previouslyApproved.total }}
+              </template>
+            </p>
+          </div>
+          <div
+            v-if="previouslyApprovedServices.length"
+            class="divider"
+          />
+
+          <!-- NEWLY APPROVED SERVICES -->
           <div
             class="row"
           >
@@ -187,7 +186,7 @@
               </span>
             </p>
             <p class="price">
-              {{ newlyApproved.preTaxTotal }}
+              {{ newlyApproved.preTax }}
             </p>
           </div>
           <div class="divider" />
@@ -211,17 +210,29 @@
               {{ $t("total") }}
             </p>
             <p class="price">
-              {{ newlyApproved.total }}
+              <template v-if="loading.getTax">
+                <dot-dot-dot-spinner />
+              </template>
+              <template v-else>
+                {{ newlyApproved.total }}
+              </template>
             </p>
           </div>
         </template>
+
         <div class="divider" />
+
         <div class="row total bold">
           <p class="item">
             {{ $route.name === 'summary' ? $t("total_cost") : $t("total_updated_cost") }}
           </p>
           <p class="price">
-            {{ total }}
+            <template v-if="loading.getTax">
+              <dot-dot-dot-spinner />
+            </template>
+            <template v-else>
+              {{ total }}
+            </template>
           </p>
         </div>
       </div>
@@ -380,53 +391,67 @@ export default Vue.extend({
       'previouslyApprovedServices',
       'servicesApprovedAtDealership'
     ]),
-    servicesApprovedAtDealershipTotal () {
-      return this.formatCurrency(this.getTotal(this.servicesApprovedAtDealership))
-    },
-    previouslyApprovedServicesTotal () {
-      return this.formatCurrency(this.getTotal(this.previouslyApprovedServices))
+    approvedAtDealership () {
+      let services = this.servicesApprovedAtDealership
+      let total = this.getTotal(services)
+
+      return {
+        services,
+        count: services.length,
+        total: this.formatCurrency(total)
+      }
     },
     newlyApproved () {
       let services = [
         ...this.additionalServices,
         ...this.deferredServices
       ]
-        .filter(service => service.isSelected && this.getServiceDisplayPrice(service) !== false)
-      let total = this.getTotal(services)
+        .filter(service => {
+          const selected = service.isSelected
+          const actionable = this.getServiceDisplayPrice(service) !== false
+          return selected && actionable
+        })
+      let pretax = this.getTotal(services)
+      let tax = this.$store.state.tax.newlyApproved
 
       return {
-        tax: this.formatCurrency(this.$store.state.tax.newlyApproved),
+        services,
         count: services.length,
-        total: this.formatCurrency(total + this.$store.state.tax.previouslyApproved),
-        preTaxTotal: this.formatCurrency(total),
-        services
+        tax: this.formatCurrency(tax),
+        preTax: this.formatCurrency(pretax),
+        total: this.formatCurrency(pretax + tax)
       }
     },
-    displayTotal () {
-      let total = ''
-      if (this.$route.name === 'summary') {
-        total = this.formatCurrency(this.$store.getters.total.inspection)
+    previouslyApproved () {
+      let services = this.$store.getters.previouslyApprovedServices
+      let pretax = this.getTotal(services)
+      let tax = this.$store.state.tax.previouslyApproved
+
+      return {
+        services,
+        count: services.length,
+        tax: this.formatCurrency(tax),
+        preTax: this.formatCurrency(pretax),
+        total: this.formatCurrency(pretax + tax)
       }
-      if (this.$route.name === 'additional-summary') {
-        let subsum = 0
-        subsum += this.getTotal(this.deferredServices)
-        subsum += this.getTotal(this.additionalServices)
-        total = this.formatCurrency(subsum)
-      }
-      return total
-    },
-    previouslyApprovedTax () {
-      return this.formatCurrency(this.$store.state.tax.previouslyApproved)
     },
     total () {
-      let total = ''
+      let total = 0
+      let formatted = ''
       if (this.$route.name === 'summary') {
-        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax.previouslyApproved)
+        total = this.$store.getters.total.service +
+          this.$store.getters.total.inspection +
+          this.$store.state.tax.newlyApproved
+        formatted = this.formatCurrency(total)
       }
       if (this.$route.name === 'additional-summary') {
-        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax.previouslyApproved)
+        total = this.$store.getters.total.service +
+          this.$store.getters.total.inspection +
+          this.$store.state.tax.newlyApproved +
+          this.$store.state.tax.previouslyApproved
+        formatted = this.formatCurrency(total)
       }
-      return total
+      return formatted
     }
   },
   mounted () {

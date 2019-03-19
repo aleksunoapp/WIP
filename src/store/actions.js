@@ -90,23 +90,6 @@ export const actions = {
         commit('setLoading', { key: 'getMetadata', loading: false })
       })
   },
-  async getTaxForService ({ commit, dispatch }, service) {
-    commit('setLoading', { key: 'getTax', loading: true })
-    await fetchTax([service.id])
-      .then((response) => {
-        commit('setServiceTax', {
-          service,
-          tax: response.taxAndFee
-        })
-      })
-      .catch((error) => {
-        error.message = i18n.t('we_couldnt_get_tax')
-        dispatch('handleError', error)
-      })
-      .finally(() => {
-        commit('setLoading', { key: 'getTax', loading: false })
-      })
-  },
   async getTax ({ commit, dispatch, getters, state }) {
     let selectedServiceIds = []
     state.services.forEach((service) => {
@@ -124,10 +107,13 @@ export const actions = {
         }
       }
     })
+
     const previouslyApprovedServiceIds = getters.previouslyApprovedServices.map(service => service.id)
     selectedServiceIds = selectedServiceIds.filter(id => !previouslyApprovedServiceIds.includes(id))
+
     commit('setLoading', { key: 'getTax', loading: true })
-    Promise.all(fetchTax(selectedServiceIds), fetchTax(selectedServiceIds))
+
+    Promise.all([fetchTax(selectedServiceIds), fetchTax(previouslyApprovedServiceIds)])
       .then((responses) => {
         const [newlyApprovedServicesTaxResponse, previouslyApprovedServicesTaxResponse] = responses
         commit('setNewlyApprovedTax', newlyApprovedServicesTaxResponse.taxAndFee)
@@ -218,29 +204,12 @@ export const actions = {
             commit('setAdvisor', advisor)
             commit('setInspectionReportUrl', inspectionReportUrlResponse.fullInspectionUrl)
             dispatch('routeAfterLogin')
-
-            // in additional flow
-            if (additional) {
-              dispatch('getTaxesForServicesFromFirstLink')
-            }
           })
       })
       .catch((error) => {
         dispatch('handleError', error)
         commit('setLoading', { key: 'logIn', loading: false })
       })
-  },
-  async getTaxesForServicesFromFirstLink ({ dispatch, getters }) {
-    // if these calls are made immediately, they returns a 403 CORS 'Missing Authentication Token'
-    const wait = (amount = 0) => new Promise(resolve => setTimeout(resolve, amount))
-    await wait(3000)
-    // get tax for services approved in the first link
-    for (const previous of getters.previouslyApprovedServices) {
-      // but not category 4, because that's pre-first link (when checking into dealership)
-      if (previous.category !== '4') {
-        await dispatch('getTaxForService', previous)
-      }
-    }
   },
   sendLog () {
     postLog()
