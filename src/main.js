@@ -1,105 +1,27 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
-import router from './router'
-import VueTouch from 'vue-touch'
-VueTouch.config.swipe = {
-	direction: 'horizontal'
-}
-Vue.use(VueTouch, {name: 'v-touch'})
+import App from './App.vue'
+import router from '@/router'
+import store from '@/store'
+import VueI18n from 'vue-i18n'
+import { messages, dateTimeFormats } from '@/messages'
+import { sync } from 'vuex-router-sync'
 
 Vue.config.productionTip = false
-require('./assets/css/style.css')
 
-/* eslint-disable no-new */
-new Vue({
-	el: '#app',
-	router,
-	template: '<App/>',
-	components: { App },
-	data () {
-		return {
-			meta: {
-				local: '',
-				dealerContactInfo: {}
-			},
-			inspection: [],
-			services: [],
-			serviceDetails: [],
-			inspectionCounts: {},
-			total: 0,
-			token: '',
-			accessToken: '',
-			dealer: false,
-			mobile: false,
-			userActivity: {
-				clientId: null,
-				eventTracker: [],
-				pageDurations: {
-					home: null,
-					tutorialSlide: {
-						first: null,
-						second: null,
-						third: null
-					},
-					inspection: null,
-					services: null,
-					infoPopup: []
-				}
-			},
-			previousDurations: {
-				services: 0,
-				inspection: 0,
-				home: 0
-			},
-			serviceCategories: []
-		}
-	},
-	methods: {
-		logEvent (eventDescription) {
-			let eventObject = {
-				'page': this.$route.name,
-				'event': eventDescription
-			}
-			this.$root.$data.userActivity.eventTracker.push(eventObject)
-		},
-		logError (eventDescription) {
-			let eventObject = {
-				'page': this.$route.name,
-				'error': eventDescription
-			}
-			this.$root.$data.userActivity.eventTracker.push(eventObject)
-		},
-		logPageDuration (pageName) {
-			if (this.$root.$data.userActivity.pageDurations[pageName] === null) {
-				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
-			} else if (this.$root.$data.userActivity.pageDurations[pageName] < 1000000000000) {
-				this.previousDurations[pageName] = this.$root.$data.userActivity.pageDurations[pageName]
-				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
-			} else {
-				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDurations[pageName]
-				this.previousDurations[pageName] = 0
-			}
-		},
-		logTutorialDuration (slideNumber) {
-			if (this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] === null) {
-				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now()
-			} else {
-				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now() - this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber]
-			}
-		},
-		logInfoPopupDuration (id) {
-			let popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
-			if (popup === undefined) {
-				this.$root.$data.userActivity.pageDurations.infoPopup.push({id: id, duration: null})
-				popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
-			}
-			if (popup.duration === null) {
-				popup.duration = Date.now()
-			} else {
-				popup.duration = Date.now() - popup.duration
-			}
-		}
-	}
+Vue.use(VueI18n)
+
+// Create VueI18n instance with options
+export const i18n = new VueI18n({
+  locale: 'en-CA', // default locale
+  messages, // localized strings
+  dateTimeFormats // locale-specific date and time formats
 })
+
+new Vue({
+  router,
+  i18n,
+  store,
+  render: (h) => h(App)
+}).$mount('#app')
+
+sync(store, router)

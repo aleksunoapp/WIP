@@ -1,21 +1,24 @@
-﻿.DS_Store
-node_modules/
-dist/
+.DS_Store
+node_modules
+/dist
+
+/tests/e2e/videos/
+/tests/e2e/screenshots/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-test/unit/coverage
 
 # Editor directories and files
 .idea
+.vscode
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-/bin
-/obj/Debug
-/.vs/config
-/Dynamic_MPI.csproj.user
-/.vs/VSWorkspaceState.json
-/.vs/ProjectSettings.json
-/.vs/slnx.sqlite
+*.sw*

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   version="1.1"
+   id="svg20"
+   sodipodi:docname="clock.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata24">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2400"
+     inkscape:window-height="1321"
+     id="namedview22"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="11.238095"
+     inkscape:cx="10.5"
+     inkscape:cy="10.499926"
+     inkscape:window-x="-9"
+     inkscape:window-y="-5"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg20" />
+  <defs
+     id="defs5">
+    <clipPath
+       id="clip_0">
+      <rect
+         x="-49"
+         y="-492"
+         width="375"
+         height="668"
+         id="rect2"
+         style="clip-rule:evenodd" />
+    </clipPath>
+  </defs>
+  <defs
+     id="defs14">
+    <clipPath
+       id="clip_1">
+      <rect
+         x="-49"
+         y="-492"
+         width="375"
+         height="668"
+         id="rect11"
+         style="clip-rule:evenodd" />
+    </clipPath>
+  </defs>
+  <g
+     id="g30"
+     transform="matrix(4.8000077,0,0,4.8000077,0,-0.79980608)">
+    <g
+       id="g9"
+       clip-path="url(#clip_0)">
+      <path
+         id="path7"
+         d="M 0,10.4167 C 0,4.66383 4.66383,0 10.4167,0 c 5.753,0 10.4166,4.66383 10.4166,10.4167 0,5.753 -4.6636,10.4166 -10.4166,10.4166 C 4.66383,20.8333 0,16.1697 0,10.4167 Z m 1.89394,0 c 0,4.7069 3.81581,8.5227 8.52276,8.5227 4.7069,0 8.5227,-3.8158 8.5227,-8.5227 0,-4.70695 -3.8158,-8.52276 -8.5227,-8.52276 -4.70695,0 -8.52276,3.81581 -8.52276,8.52276 z"
+         transform="translate(0,0.166626)"
+         inkscape:connector-curvature="0"
+         style="fill:#3d56f5;fill-rule:evenodd;stroke:none" />
+    </g>
+    <g
+       id="g18"
+       clip-path="url(#clip_1)">
+      <path
+         id="path16"
+         d="M 1.89394,6.23651 V 0.94697 C 1.89394,0.424006 1.46993,0 0.94697,0 0.424006,0 0,0.424006 0,0.94697 V 6.62879 C 0,6.63092 7.10227e-4,6.63305 7.10227e-4,6.63518 9.4697e-4,6.69508 0.00686553,6.75497 0.0187027,6.81392 0.0243845,6.84304 0.0350379,6.86932 0.0433239,6.89773 0.0525568,6.92898 0.0596591,6.9607 0.0722065,6.99124 0.0859375,7.02391 0.104403,7.05374 0.121449,7.08452 0.134233,7.10819 0.144413,7.13187 0.159328,7.15436 0.194129,7.20668 0.233665,7.25568 0.277936,7.29948 L 2.95573,9.97751 c 0.36979,0.36979 0.96993,0.36979 1.33949,0 0.36979,-0.36979 0.36979,-0.96993 0,-1.33902 z"
+         transform="translate(9.46973,4.90149)"
+         inkscape:connector-curvature="0"
+         style="fill:#3d56f5;stroke:none" />
+    </g>
+  </g>
+</svg>

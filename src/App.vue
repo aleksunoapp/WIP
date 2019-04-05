@@ -1,117 +1,167 @@
 <template>
-	<div id="app">
-		<router-view v-if="computedMeta"></router-view>
-		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
-	</div>
+  <div id="dmpi">
+    <drawer />
+    <error-overlay />
+
+    <app-header />
+    <route-container />
+  </div>
 </template>
 
 <script>
-import $ from 'jquery'
-import ENV from './environment'
-import { isEmpty } from 'lodash'
-import ErrorMessage from './components/ErrorMessage'
-import authenticateToken from './mixins/authenticateToken.js'
+import Vue from 'vue'
+import AppHeader from '@/components/AppHeader.vue'
+import Drawer from '@/components/Drawer.vue'
+import ErrorOverlay from '@/components/ErrorOverlay.vue'
+import RouteContainer from '@/components/RouteContainer.vue'
 
-export default {
-	name: 'app',
-	/**
-	 * Run on `created` to pull all of the data.
-	 * @function
-	 * @returns {undefined}
-	 */
-	created () {
-		if (this.$route.params.uniqueUrl) {
-			this.$root.token = this.$route.params.uniqueUrl
-			this.$root.userActivity.clientId = this.$route.params.uniqueUrl
-		}
+export const App = Vue.extend({
+  components: {
+    AppHeader,
+    Drawer,
+    ErrorOverlay,
+    RouteContainer
+  },
 
-		// Check if device is mobile (for hiding call/text buttons)
-		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			this.$root.mobile = true
-		}
+  errorCaptured (err, vm, info = '') {
+    this.setError(err, info)
+  },
+  methods: {
+    setError (e, i) {
+      // eslint-disable-next-line
+      console.log({ e }, { i })
+    }
+  }
+})
 
-		// If url is from a dealer, authenticate right away
-		if (this.$route.query.secret) {
-			this.$root.dealer = true
-			this.verificationCode = this.$route.query.secret
-			this.authenticateToken()
-		}
-
-		this.getMetaData()
-	},
-	data () {
-		return {
-			showErrorMessage: false,
-			verificationCode: ''
-		}
-	},
-	computed: {
-		/**
-		 * To compute whether the meta data object is empty
-		 * @function
-		 * @returns {boolean} - Whether the meta data object is empty or not
-		 */
-		computedMeta () {
-			return !isEmpty(this.$root.meta)
-		}
-	},
-	methods: {
-		/**
-		 * To retreive services and meta data from api
-		 * @function
-		 * @returns {undefined}
-		 */
-		getMetaData () {
-			let _this = this
-
-			// Since we are repulling the data, the user should not be able to get past the verification screen
-			if (this.$route.name !== 'code') {
-				this.$router.push({name: 'code'})
-			}
-
-			let url = ENV.production_url + '/metadata/' + this.$root.token
-			let tempLocal = this.$root.meta.local
-
-			if (this.$root.meta.local) {
-				url += '/' + this.$root.meta.local
-			}
-
-			$.getJSON(url).done((response, textStatus, xhr) => {
-				if (xhr.status === 200) {
-					if (tempLocal && response.local !== tempLocal) {
-						response.local = tempLocal
-					}
-
-					_this.$root.meta = {
-						...response,
-						local: response.local ? response.local : 'en-CA'
-					}
-					delete _this.$root.meta.serviceCategories
-					_this.$root.serviceCategories = response.serviceCategories
-				} else {
-					this.showErrorMessage = true
-				}
-			})
-		},
-		/**
-		 * To close the error modal
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeErrorModal () {
-			this.showErrorMessage = false
-		}
-	},
-	components: {
-		ErrorMessage
-	},
-	watch: {
-		'$root.meta.local' (newVal, oldVal) {
-			if (oldVal) {
-				this.getMetaData()
-			}
-		}
-	},
-	mixins: [authenticateToken]
-}
+export default App
 </script>
+
+<style lang="scss">
+@font-face {
+  font-family: 'Futura Book';
+  src: url('./assets/fonts/futura_book_regular-webfont.woff2') format('woff2'),
+        url('./assets/fonts/futura_book_regular-webfont.woff') format('woff');
+}
+@font-face {
+  font-family: 'Futura Heavy';
+  src: url('./assets/fonts/futura_heavy_regular-webfont.woff2') format('woff2'),
+        url('./assets/fonts/futura_heavy_regular-webfont.woff') format('woff');
+}
+
+* {
+  box-sizing: border-box;
+  outline: none;
+  overflow-wrap: break-word;
+}
+*:focus {
+  outline: 1px solid #3d56f5;
+}
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-size: 10px;
+}
+#dmpi {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+
+  font-size: 1.5rem;
+  font-family: 'Futura Book';
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+
+  --green: #2eaf4d;
+  --green-pastel: #71C986;
+  --blue: #3d56f5;
+  --blue-light: #d1d7fa;
+  --black: #474b66;
+  --white: #ffffff;
+  --red: #d0021b;
+  --yellow: #ecdf00;
+  --grey-input-border: #c3c3c3;
+  --grey-text: #989898;
+  --grey-pagination: #d6d6da;
+  --grey-light-background: #f7f7fa;
+  --grey-medium-background: #DBDBDB;
+  --grey-dark-background: #4a4a4a;
+  --grey-transparent: rgba(0,0,0,0.75);
+  --shadow: 0px 3px 8px 0px rgba(42,55,71,0.15);
+  --shadow-light: 0 0 20px 0 rgba(24,31,77,0.05);
+  --text: #181F4D;
+  --header-height: 6rem;
+  --unit: 10px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all .1s ease;
+}
+.slide-fade-leave-active {
+  transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(-1000px);
+}
+
+.button {
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  text-transform: uppercase;
+  text-align: center;
+  border: none;
+}
+.button:disabled {
+  opacity: 0.75;
+}
+.button.cta {
+  font-family: 'Futura Heavy';
+  height: 5rem;
+  line-height: 2rem;
+  font-size: 1.8rem;
+  font-weight: 400;
+  box-shadow: var(--shadow);
+  background-color: var(--blue);
+  color: var(--white);
+  border-radius: 3px;
+}
+.button.cta.green {
+  background-color: var(--green);
+}
+.button.skip {
+  height: 4rem;
+  background-color: rgba(0, 0, 0, 0);
+  color: var(--black);
+}
+
+.label ~ .input[type="text"] {
+  width: 100%;
+  margin: 1rem 0;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.input[type="text"] {
+  width: 100%;
+  height: 50px;
+  padding: 0 1rem;
+  border: 1px solid var(--grey-input-border);
+  border-radius: 3px;
+  font-size: 1.8rem;
+}
+
+.bold {
+  font-family: 'Futura Heavy';
+  font-weight: 700;
+}
+</style>

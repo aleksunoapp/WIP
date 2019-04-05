@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="53.024731"
+   viewBox="0 0 100 53.024731"
+   version="1.1"
+   id="svg11"
+   sodipodi:docname="chevron-down.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata17">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs15" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1440"
+     inkscape:window-height="775"
+     id="namedview13"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.50464135"
+     inkscape:cx="-494.24965"
+     inkscape:cy="-384.84267"
+     inkscape:window-x="480"
+     inkscape:window-y="1081"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg11" />
+  <g
+     id="PERSONAL_DATA-Copy"
+     transform="matrix(5.8549123,0,0,-5.8549123,-1921.9905,202.91566)"
+     style="fill:none;fill-rule:evenodd;stroke:#3d56f5;stroke-width:2;stroke-linecap:round;stroke-linejoin:round">
+    <g
+       id="Group"
+       transform="translate(53)">
+      <g
+         id="CHEVRON"
+         transform="matrix(0,-1,-1,0,293.07546,35.036253)">
+        <g
+           id="Chevron"
+           transform="rotate(90,4,4.963783)">
+          <polyline
+             id="Shape"
+             points="15.8315136 7.57510164 8.30210181 0.528376588 0.772690044 7.57510164" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
