@@ -679,12 +679,16 @@ export default Vue.extend({
             if (category.serviceCategoryType.toLowerCase() !== 'pass') {
               const services = this.categoryServicesShownOnRoute(category.id)
               if (services.length) {
-                service = services[0]
-                break
+                const withImage = services.filter(s => s.imageUrl)
+                if (withImage.length) {
+                  service = withImage[0]
+                  break
+                }
               }
             }
           }
         }
+
         // in empty flow, there's nothing to show
         if (!service) {
           this.setPage(4)
