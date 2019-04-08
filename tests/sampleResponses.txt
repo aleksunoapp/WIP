@@ -1,0 +1,953 @@
+{
+  "local": "en-CA",
+  "firstName": "Jo",
+  "lastName": "Smith",
+  "topImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-logo.png",
+  "bottomImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "disclaimer": "The information contained on this Website (the \"Service\") is for general information purposes only.Dealer - Fx assumes no responsibility for errors or omissions in the contents on the Service.",
+  "carDescription": "2010 ALTIMA",
+  "carImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "themeId": "NISSAN",
+  "promise": "2019-05-30T23:30:00+00:00",
+  "responseBy": "2019-03-30T23:00:00+00:00",
+  "status": "5",
+  "expired": false,
+  "isBusiness": false,
+  "serviceCategories": [
+    {
+      "id": "1",
+      "name": "Safety Concerns",
+      "serviceCategoryType": "SAFETY",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/fail-white.png",
+      "sortOrder": 1,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "2",
+      "name": "Items Requiring Attention",
+      "serviceCategoryType": "ATTN",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/warning-white.png",
+      "sortOrder": 2,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "3",
+      "name": "Items Not Requiring Any Action",
+      "serviceCategoryType": "PASS",
+      "iconUrl": "http://unoapp.com/dfx-mpi/v1/images/pass-white.png",
+      "sortOrder": 3,
+      "defaultExpended": false,
+      "isPreApproved": false,
+      "showOnSummary": false,
+      "showOnInspection": true
+    },
+    {
+      "id": "4",
+      "name": "Previously Approved Services",
+      "serviceCategoryType": "PRE",
+      "iconUrl": null,
+      "sortOrder": 99,
+      "defaultExpended": true,
+      "isPreApproved": true,
+      "showOnSummary": true,
+      "showOnInspection": false
+    },
+    {
+      "id": "5",
+      "name": "Customer Concerns",
+      "serviceCategoryType": "CC",
+      "iconUrl": "https://test2dynamicmpibridge.dealer-fx.com/Content/images/ServiceCategory/Guest_Concerns_Greybard.png",
+      "sortOrder": 4,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": false
+    }
+  ],
+  "dealerContactInfo": {
+    "name": "Nissan of Anytown USA",
+    "logoUrl": null,
+    "phone": "7709988686",
+    "email": "service@regalauto.com",
+    "address": "123 Demo Street",
+    "smsPhone": "12242035286"
+  },
+  "declinedReasons": [
+    {
+      "id": 1,
+      "name": "I don't have time"
+    },
+    {
+      "id": 2,
+      "name": "I am concerned with the cost"
+    },
+    {
+      "id": 3,
+      "name": "I cannot afford this item"
+    },
+    {
+      "id": 4,
+      "name": "I am considering changing my vehicle"
+    },
+    {
+      "id": 5,
+      "name": "I need alternate transportation"
+    },
+    {
+      "id": 0,
+      "name": "No reason"
+    }
+  ],
+  "supportedLanguages": [
+    {
+      "culture": "en-CA",
+      "name": "English"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "French"
+    },
+    {
+      "culture": "es-mx",
+      "name": "Spanish"
+    }
+  ],
+  "customerConcernsLabel": "Customer Concerns",
+  "customerCommentsLabel": "Customer Comments"
+}
+{"token_type":"Bearer","access_token":"CfDJ8NXrlHRGDUdJkBbBRBWVPznA1lV22CLRux-HoDCk3FKBzBZqxT7Au4BI2dM5gSXpK1BBGSsmKDRceis1huwGdcEOv2hzaGwrFAtP2TDBdWOdnHkHFmJg2MtO8czofGb5iNJ-glG7qgt4KvC2IHuvUpv2C9-fE1OHiPLYlDpjstXuiiJeM_0mDasVb_HQIKon5Fyu9ItsXkO1KMzAe-t-_DR74YQ_B4tJGegc55Kg9OMmqAdLavTWe1kjmZfUJf08u3OOjr3k51w5Fz_Pcx51dHBCPn1GlXZJYtHtC6xgEA2osVMb3qSLaAwsfnaNr2gJCEekSMIyKCVC58erUdXvEOTtsV0mFtVm1UQud8nBQ0LfiNI4ImQOsUzXa9KWmG2gV0PhbgIMmFrcl0Bw8CAFJOOXNrFJccpq5FEClFQCLG70rBQwsQbYC9xgTQhKRM5D4lFLQ6Q4VgtcBm98o_JgIeDzSUdC9avsNxNryA6Y9tW44UcT4i8CvWf7xZknKa5N1qr_XOevLPK3FgIp9Sdl0oJfJYj4Sv5g9UkcRHF2PGgekxbM4A7mORwh5kXXW23EncgG_uTyZzp0VutPcoBZvwt4vZGhsCpnq4Em1eEa_jlR-zIQNqThQ5stNweNSyrSPSC8rzbvxIjAOGBo1vDSi8uf71rMvgsRA4nP2HYk4AFWj4a5JjPhB-iVTTIerX7boA2-AR2fRNMsuNUMOtcPuslY9WaWSZeqMyFy6Q7GMPLOKfzSiD0_o-67SvXDh2XTEj0ounrgWiGr9lmAJMPyq88_1YHZsYfh59GDqM4qDs_n","expires_in":1800}
+[
+  {
+    "id": "10",
+    "name": "Fix Tail Light",
+    "category": "1",
+    "price": 500.0,
+    "taxAndFee": 50.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/tail-lights.webp",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "11",
+    "name": "Replace Windshield Wipers",
+    "category": "1",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/windshield-wipers.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Warranty",
+    "laborMatrixPaymentTranslations": "Covered by warranty"
+  },
+  {
+    "id": "22",
+    "name": "Replace Air Filter",
+    "category": "2",
+    "price": 100.0,
+    "taxAndFee": 15.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/air-filter.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "NA",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "23",
+    "name": "Replace Cooling System Hoses",
+    "category": "2",
+    "price": 40.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/cooling-system-hoses.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "30",
+    "name": "Check Rear Shocks",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": null,
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "31",
+    "name": "Adjust Tire Rotation",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2031",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "41",
+    "name": "Check Differential For Leaks",
+    "category": "4",
+    "price": 30.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "61",
+    "name": "Test Battery Capacity (en-CA)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "Free"
+  },
+  {
+    "id": "62",
+    "name": "Test Battery Capacity (en-CA)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": "61",
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "Free"
+  },
+  {
+    "id": "81",
+    "name": "Check Muffler Noise",
+    "category": "8",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "82",
+    "name": "Check Muffler Noise",
+    "category": "81",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  }
+]
+{
+  "fullInspectionUrl": "http://test2newommcache2.dealer-fx.com/41/8002/en-US/1420174_1N4AL2APXAN402749_201707241227060264.PDF"
+}
+{
+  "advisorName": "JOHN WILLIAMS",
+  "advisorImageUrl": "http://unoapp.com/dfx-mpi/v1/images/guy.png",
+  "marketingImageUrl": null
+}
+{
+  "taxAndFee": 0.0,
+  "total": 0.0
+}
+
+
+French{
+  "local": "en-CA",
+  "firstName": "Jo",
+  "lastName": "Smith",
+  "topImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-logo.png",
+  "bottomImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "disclaimer": "The information contained on this Website (the \"Service\") is for general information purposes only.Dealer - Fx assumes no responsibility for errors or omissions in the contents on the Service.",
+  "carDescription": "2010 ALTIMA",
+  "carImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "themeId": "NISSAN",
+  "promise": "2019-05-30T23:30:00+00:00",
+  "responseBy": "2019-03-30T23:00:00+00:00",
+  "status": "5",
+  "expired": false,
+  "isBusiness": false,
+  "serviceCategories": [
+    {
+      "id": "1",
+      "name": "FR-Safety Concerns",
+      "serviceCategoryType": "SAFETY",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/fail-white.png",
+      "sortOrder": 1,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "2",
+      "name": "FR-Items Requiring Attention",
+      "serviceCategoryType": "ATTN",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/warning-white.png",
+      "sortOrder": 2,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "3",
+      "name": "FR-Items Not Requiring Any Action",
+      "serviceCategoryType": "PASS",
+      "iconUrl": "http://unoapp.com/dfx-mpi/v1/images/pass-white.png",
+      "sortOrder": 3,
+      "defaultExpended": false,
+      "isPreApproved": false,
+      "showOnSummary": false,
+      "showOnInspection": true
+    },
+    {
+      "id": "4",
+      "name": "FR-Previously Approved Services",
+      "serviceCategoryType": "PRE",
+      "iconUrl": null,
+      "sortOrder": 99,
+      "defaultExpended": true,
+      "isPreApproved": true,
+      "showOnSummary": true,
+      "showOnInspection": false
+    },
+    {
+      "id": "5",
+      "name": "FR-Customer Concerns",
+      "serviceCategoryType": "CC",
+      "iconUrl": "https://test2dynamicmpibridge.dealer-fx.com/Content/images/ServiceCategory/Guest_Concerns_Greybard.png",
+      "sortOrder": 4,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": false
+    }
+  ],
+  "dealerContactInfo": {
+    "name": "Nissan of Anytown USA",
+    "logoUrl": null,
+    "phone": "7709988686",
+    "email": "service@regalauto.com",
+    "address": "123 Demo Street",
+    "smsPhone": "12242035286"
+  },
+  "declinedReasons": [
+    {
+      "id": 1,
+      "name": "FR-I don't have time"
+    },
+    {
+      "id": 2,
+      "name": "FR-I am concerned with the cost"
+    },
+    {
+      "id": 3,
+      "name": "FR-I cannot afford this item"
+    },
+    {
+      "id": 4,
+      "name": "FR-I am considering changing my vehicle"
+    },
+    {
+      "id": 5,
+      "name": "FR-I need alternate transportation"
+    },
+    {
+      "id": 0,
+      "name": "FR-No reason"
+    }
+  ],
+  "supportedLanguages": [
+    {
+      "culture": "en-CA",
+      "name": "English"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "French"
+    },
+    {
+      "culture": "es-mx",
+      "name": "Spanish"
+    }
+  ],
+  "customerConcernsLabel": "Préoccupations du client",
+  "customerCommentsLabel": "Commentaires du client"
+}
+[
+  {
+    "id": "10",
+    "name": "FR: Fix Tail Light",
+    "category": "1",
+    "price": 500.0,
+    "taxAndFee": 50.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/tail-lights.webp",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "11",
+    "name": "FR: Replace Windshield Wipers",
+    "category": "1",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/windshield-wipers.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Warranty",
+    "laborMatrixPaymentTranslations": "FR: Covered by warranty"
+  },
+  {
+    "id": "22",
+    "name": "FR: Replace Air Filter",
+    "category": "2",
+    "price": 100.0,
+    "taxAndFee": 15.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/air-filter.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "NA",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "23",
+    "name": "FR: Replace Cooling System Hoses",
+    "category": "2",
+    "price": 40.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/cooling-system-hoses.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "30",
+    "name": "FR: Check Rear Shocks",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": null,
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "31",
+    "name": "FR: Adjust Tire Rotation",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2031",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "41",
+    "name": "FR: Check Differential For Leaks",
+    "category": "4",
+    "price": 30.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "61",
+    "name": "FR: Test Battery Capacity (fr-CA)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "FR-Free"
+  },
+  {
+    "id": "62",
+    "name": "FR: Test Battery Capacity (fr-CA)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": "61",
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "FR-Free"
+  },
+  {
+    "id": "81",
+    "name": "FR: Check Muffler Noise",
+    "category": "8",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "82",
+    "name": "FR: Check Muffler Noise",
+    "category": "81",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  }
+]
+
+Spanish
+{
+  "local": "en-CA",
+  "firstName": "Jo",
+  "lastName": "Smith",
+  "topImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-logo.png",
+  "bottomImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "disclaimer": "The information contained on this Website (the \"Service\") is for general information purposes only.Dealer - Fx assumes no responsibility for errors or omissions in the contents on the Service.",
+  "carDescription": "2010 ALTIMA",
+  "carImageUrl": "http://unoapp.com/dfx-mpi/v1/images/nissan-car.png",
+  "themeId": "NISSAN",
+  "promise": "2019-05-30T23:30:00+00:00",
+  "responseBy": "2019-03-30T23:00:00+00:00",
+  "status": "5",
+  "expired": false,
+  "isBusiness": false,
+  "serviceCategories": [
+    {
+      "id": "1",
+      "name": "ES-Safety Concerns",
+      "serviceCategoryType": "SAFETY",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/fail-white.png",
+      "sortOrder": 1,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "2",
+      "name": "ES-Items Requiring Attention",
+      "serviceCategoryType": "ATTN",
+      "iconUrl": "http://www.unoapp.com/dfx-mpi/v1/images/warning-white.png",
+      "sortOrder": 2,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": true
+    },
+    {
+      "id": "3",
+      "name": "ES-Items Not Requiring Any Action",
+      "serviceCategoryType": "PASS",
+      "iconUrl": "http://unoapp.com/dfx-mpi/v1/images/pass-white.png",
+      "sortOrder": 3,
+      "defaultExpended": false,
+      "isPreApproved": false,
+      "showOnSummary": false,
+      "showOnInspection": true
+    },
+    {
+      "id": "4",
+      "name": "ES-Previously Approved Services",
+      "serviceCategoryType": "PRE",
+      "iconUrl": null,
+      "sortOrder": 99,
+      "defaultExpended": true,
+      "isPreApproved": true,
+      "showOnSummary": true,
+      "showOnInspection": false
+    },
+    {
+      "id": "5",
+      "name": "ES-Customer Concerns",
+      "serviceCategoryType": "CC",
+      "iconUrl": "https://test2dynamicmpibridge.dealer-fx.com/Content/images/ServiceCategory/Guest_Concerns_Greybard.png",
+      "sortOrder": 4,
+      "defaultExpended": true,
+      "isPreApproved": false,
+      "showOnSummary": true,
+      "showOnInspection": false
+    }
+  ],
+  "dealerContactInfo": {
+    "name": "Nissan of Anytown USA",
+    "logoUrl": null,
+    "phone": "7709988686",
+    "email": "service@regalauto.com",
+    "address": "123 Demo Street",
+    "smsPhone": "12242035286"
+  },
+  "declinedReasons": [
+    {
+      "id": 1,
+      "name": "ES-I don't have time"
+    },
+    {
+      "id": 2,
+      "name": "ES-I am concerned with the cost"
+    },
+    {
+      "id": 3,
+      "name": "ES-I cannot afford this item"
+    },
+    {
+      "id": 4,
+      "name": "ES-I am considering changing my vehicle"
+    },
+    {
+      "id": 5,
+      "name": "ES-I need alternate transportation"
+    },
+    {
+      "id": 0,
+      "name": "ES-No reason"
+    }
+  ],
+  "supportedLanguages": [
+    {
+      "culture": "en-CA",
+      "name": "English"
+    },
+    {
+      "culture": "fr-CA",
+      "name": "French"
+    },
+    {
+      "culture": "es-mx",
+      "name": "Spanish"
+    }
+  ],
+  "customerConcernsLabel": "ES-Customer Concerns",
+  "customerCommentsLabel": "ES-Customer Comments"
+}
+[
+  {
+    "id": "10",
+    "name": "ES: Fix Tail Light",
+    "category": "1",
+    "price": 500.0,
+    "taxAndFee": 50.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/tail-lights.webp",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "11",
+    "name": "ES: Replace Windshield Wipers",
+    "category": "1",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/windshield-wipers.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Warranty",
+    "laborMatrixPaymentTranslations": "ES: Covered by warranty"
+  },
+  {
+    "id": "22",
+    "name": "ES: Replace Air Filter",
+    "category": "2",
+    "price": 100.0,
+    "taxAndFee": 15.0,
+    "isSelected": true,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/air-filter.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "NA",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "23",
+    "name": "ES: Replace Cooling System Hoses",
+    "category": "2",
+    "price": 40.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/cooling-system-hoses.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "30",
+    "name": "ES: Check Rear Shocks",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": null,
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "31",
+    "name": "ES: Adjust Tire Rotation",
+    "category": "3",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2031",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "41",
+    "name": "ES: Check Differential For Leaks",
+    "category": "4",
+    "price": 30.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "61",
+    "name": "ES: Test Battery Capacity (es-mx)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "ES-Free"
+  },
+  {
+    "id": "62",
+    "name": "ES: Test Battery Capacity (es-mx)",
+    "category": "6",
+    "price": 0.0,
+    "taxAndFee": 0.0,
+    "isSelected": false,
+    "parentServiceId": "61",
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "./images/battery.jpg",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "Free",
+    "laborMatrixPaymentTranslations": "ES-Free"
+  },
+  {
+    "id": "81",
+    "name": "ES: Check Muffler Noise",
+    "category": "8",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  },
+  {
+    "id": "82",
+    "name": "ES: Check Muffler Noise",
+    "category": "81",
+    "price": 55.0,
+    "taxAndFee": 20.0,
+    "isSelected": false,
+    "parentServiceId": null,
+    "serviceAdvisorComments": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "imageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
+    "iconUrl": null,
+    "isHighlighted": false,
+    "declinedReasonId": -1,
+    "laborMatrixPayment": "None",
+    "laborMatrixPaymentTranslations": null
+  }
+]

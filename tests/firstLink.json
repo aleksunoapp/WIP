@@ -4,15 +4,15 @@
   "customer": {
     "customerId": "995",
     "title": null,
-    "firstName": "Gary",
-    "lastName": "Kalk",
-    "authenticationAnswer": "gary",
+    "firstName": "Jo",
+    "lastName": "Smith",
+    "authenticationAnswer": "smith",
     "culture": "en-CA",
     "phone": "14169061031",
     "notificationType": 0,
     "email": null,
     "isBusiness": false,
-    "name": "Gary Kalk"
+    "name": "Jo Smith"
   },
   "advisor": {
     "advisorUserId": "346739",
@@ -406,8 +406,8 @@
       "laborPrice": 400,
       "partsPrice": 100,
       "taxAndFee": 50,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/364x423.png?text=Safety%20Concerns%20Service%2010",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/tail-lights.webp",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -419,32 +419,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 10",
+      "name": "Fix Tail Light",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 10 (en-CA)"
+          "name": "Fix Tail Light"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 10 (fr-CA)"
+          "name": "FR: Fix Tail Light"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 10 (es-mx)"
+          "name": "ES: Fix Tail Light"
         }
       ]
     },
@@ -456,8 +456,8 @@
       "laborPrice": 0,
       "partsPrice": 0,
       "taxAndFee": 0,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/238x517.png?text=Safety%20Concerns%20Service%2011",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/windshield-wipers.jpg",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -469,15 +469,15 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "Warranty",
@@ -488,26 +488,26 @@
         },
         {
           "culture": "fr-CA",
-          "name": "FR-Covered by warranty"
+          "name": "FR: Covered by warranty"
         },
         {
           "culture": "es-MX",
-          "name": "ES-Covered by warranty"
+          "name": "ES: Covered by warranty"
         }
       ],
-      "name": "Safety Concerns Service 11",
+      "name": "Replace Windshield Wipers",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 11 (en-CA)"
+          "name": "Replace Windshield Wipers"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 11 (fr-CA)"
+          "name": "FR: Replace Windshield Wipers"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 11 (es-mx)"
+          "name": "ES: Replace Windshield Wipers"
         }
       ]
     },
@@ -519,8 +519,8 @@
       "laborPrice": 100,
       "partsPrice": 0,
       "taxAndFee": 15,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/374x306.png?text=Safety%20Concerns%20Service%2012",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/air-filter.jpg",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -532,32 +532,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "NA",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 22",
+      "name": "Replace Air Filter",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 22 (en-CA)"
+          "name": "Replace Air Filter"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 22 (fr-CA)"
+          "name": "FR: Replace Air Filter"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 22 (es-mx)"
+          "name": "ES: Replace Air Filter"
         }
       ]
     },
@@ -569,8 +569,8 @@
       "laborPrice": 0,
       "partsPrice": 40,
       "taxAndFee": 20,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/cooling-system-hoses.jpg",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -582,32 +582,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "FR: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "ES: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 23",
+      "name": "Replace Cooling System Hoses",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 23 (en-CA)"
+          "name": "Replace Cooling System Hoses"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 23 (fr-CA)"
+          "name": "FR: Replace Cooling System Hoses"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 23 (es-mx)"
+          "name": "ES: Replace Cooling System Hoses"
         }
       ]
     },
@@ -619,8 +619,8 @@
       "laborPrice": 0,
       "partsPrice": 0,
       "taxAndFee": 0,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2030",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -632,32 +632,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 30",
+      "name": "Rear Shocks",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 30 (en-CA)"
+          "name": "Check Rear Shocks"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 30 (fr-CA)"
+          "name": "FR: Check Rear Shocks"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 30 (es-mx)"
+          "name": "ES: Check Rear Shocks"
         }
       ]
     },
@@ -669,7 +669,7 @@
       "laborPrice": 0,
       "partsPrice": 0,
       "taxAndFee": 0,
-      "comment": "Comment text goes here",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2031",
       "marketingText": "",
       "marketingImageUrl": "",
@@ -682,32 +682,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 31",
+      "name": "Adjust Tire Rotation",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 31 (en-CA)"
+          "name": "Adjust Tire Rotation"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 31 (fr-CA)"
+          "name": "FR: Adjust Tire Rotation"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 31 (es-mx)"
+          "name": "ES: Adjust Tire Rotation"
         }
       ]
     },
@@ -719,7 +719,7 @@
       "laborPrice": 0,
       "partsPrice": 30,
       "taxAndFee": 20,
-      "comment": "Comment text goes here",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "topImageUrl": "https://via.placeholder.com/479x356.png?text=Safety%20Concerns%20Service%2013",
       "marketingText": "",
       "marketingImageUrl": "",
@@ -732,32 +732,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 41",
+      "name": "Check Differential For Leaks",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 41 (en-CA)"
+          "name": "Check Differential For Leaks"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 41 (fr-CA)"
+          "name": "FR: Check Differential For Leaks"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 41 (es-mx)"
+          "name": "ES: Check Differential For Leaks"
         }
       ]
     },
@@ -769,8 +769,8 @@
       "laborPrice": 0,
       "partsPrice": 0,
       "taxAndFee": 0,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/291x505.png?text=Safety%20Concerns%20Service%2014",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/battery.jpg",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -782,15 +782,15 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "Free",
@@ -808,19 +808,19 @@
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 61",
+      "name": "Test Battery Capacity",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 61 (en-CA)"
+          "name": "Test Battery Capacity (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 61 (fr-CA)"
+          "name": "FR: Test Battery Capacity (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 61 (es-mx)"
+          "name": "ES: Test Battery Capacity (es-mx)"
         }
       ]
     },
@@ -832,8 +832,8 @@
       "laborPrice": 0,
       "partsPrice": 0,
       "taxAndFee": 0,
-      "comment": "Comment text goes here",
-      "topImageUrl": "https://via.placeholder.com/291x505.png?text=Safety%20Concerns%20Service%2014",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "topImageUrl": "./images/battery.jpg",
       "marketingText": "",
       "marketingImageUrl": "",
       "technicienId": null,
@@ -845,15 +845,15 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "Free",
@@ -871,19 +871,19 @@
           "name": "ES-Free"
         }
       ],
-      "name": "Safety Concerns Service 62",
+      "name": "Test Battery Capacity",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 62 (en-CA)"
+          "name": "Test Battery Capacity (en-CA)"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 62 (fr-CA)"
+          "name": "FR: Test Battery Capacity (fr-CA)"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 62 (es-mx)"
+          "name": "ES: Test Battery Capacity (es-mx)"
         }
       ]
     },
@@ -895,7 +895,7 @@
       "laborPrice": 15,
       "partsPrice": 40,
       "taxAndFee": 20,
-      "comment": "Comment text goes here",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "topImageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
       "marketingText": "",
       "marketingImageUrl": "",
@@ -908,44 +908,44 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 81",
+      "name": "Check Muffler Noise",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 81 (en-CA)"
+          "name": "Check Muffler Noise"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 81 (fr-CA)"
+          "name": "FR: Check Muffler Noise"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 81 (es-mx)"
+          "name": "ES: Check Muffler Noise"
         }
       ]
     },
     {
       "serviceId": "82",
       "itemId": "5",
-      "parentServiceId": "82",
-      "serviceCategoryId": "8",
-      "laborPrice": 37.97,
+      "parentServiceId": "",
+      "serviceCategoryId": "81",
+      "laborPrice": 15,
       "partsPrice": 40,
       "taxAndFee": 20,
-      "comment": "Comment text goes here",
+      "comment": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "topImageUrl": "https://via.placeholder.com/544x532.png?text=Safety%20Concerns%20Service%2015",
       "marketingText": "",
       "marketingImageUrl": "",
@@ -958,32 +958,32 @@
       "serviceAdvisorComments": [
         {
           "culture": "en-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "fr-CA",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         },
         {
           "culture": "es-MX",
-          "name": "Service Advisor comments go here."
+          "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       ],
       "laborMatrixPayment": "None",
       "laborMatrixPaymentTranslations": null,
-      "name": "Safety Concerns Service 82",
+      "name": "Check Muffler Noise",
       "nameTranslations": [
         {
           "culture": "en-CA",
-          "name": "Safety Concerns Service 82 (en-CA)"
+          "name": "Check Muffler Noise"
         },
         {
           "culture": "fr-CA",
-          "name": "Safety Concerns Service 82 (fr-CA)"
+          "name": "FR: Check Muffler Noise"
         },
         {
           "culture": "es-mx",
-          "name": "Safety Concerns Service 82 (es-mx)"
+          "name": "ES: Check Muffler Noise"
         }
       ]
     }
