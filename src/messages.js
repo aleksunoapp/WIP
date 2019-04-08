@@ -77,8 +77,8 @@ const enCA = {
   please_enter_your_company_name: 'Please enter your company name',
   // drawer
   information: 'Information',
-  call_service_advisor: 'Call Service Advisor',
-  text_service_advisor: 'Text Service Advisor',
+  call_service_advisor: 'Call Service Consultant',
+  text_service_advisor: 'Text Service Consultant',
   view_inspection_report: 'View Inspection Report',
   // tutorial
   review: 'Review',
@@ -110,7 +110,7 @@ const enCA = {
   recommendation: 'Recommendation',
   back: 'Back',
   not_today: 'Not today',
-  advisor_comments: 'Advisor comments',
+  advisor_comments: 'Consultant comments',
   Warranty: 'Please note this service is covered under Warranty - you will NOT be charged for it',
   Internal: 'Please note this service is free - you will NOT be charged for it',
   ServiceContract: 'Please note the price of this service is covered by the service contract - you will NOT be charged for it',
@@ -142,7 +142,7 @@ const enCA = {
   // thanks
   thank_you: 'Thank you for your time!',
   ready: 'Your vehicle will be ready by',
-  your_service_advisor_will_confirm: 'Your Service Advisor will confirm with you when your vehicle is ready.',
+  your_service_advisor_will_confirm: 'Your Service Consultant will confirm with you when your vehicle is ready.',
   // not_found
   go_back: 'Go Back',
   log_in: 'Log In',
