@@ -372,6 +372,8 @@ export default Vue.extend({
         font-size: 1.5rem;
         letter-spacing: 1px;
         text-transform: uppercase;
+        border-color: #f7f7f7;
+        border-style: double;
       }
     }
   }
