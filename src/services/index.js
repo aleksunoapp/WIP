@@ -179,14 +179,36 @@ export const postServices = async () => {
       }
     }
   })
+  const payload = confirmedServices.map(service => {
+    return {
+      category: service.category,
+      comment: service.comment,
+      declinedReasonId: service.declinedReasonId,
+      iconUrl: service.iconUrl,
+      id: service.id,
+      imageUrl: service.imageUrl,
+      isApproved: service.isApproved,
+      isHighlighted: service.isHighlighted,
+      isSelected: service.isSelected,
+      laborMatrixPayment: service.laborMatrixPayment,
+      laborMatrixPaymentTranslations: service.laborMatrixPaymentTranslations,
+      name: service.name,
+      parentServiceId: service.parentServiceId,
+      price: service.price,
+      reasonId: service.reasonId,
+      serviceAdvisorComments: service.serviceAdvisorComments,
+      taxAndFee: service.taxAndFee
+    }
+  })
 
   const url = new URL(`${baseUrl}/services/${store.state.slug}`)
   const headers = new Headers({
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${store.state.token}`
+    'Authorization': `Bearer ${store.state.token}`,
+    'accept': '*/*'
   })
   const body = JSON.stringify({
-    confirmedServices,
+    confirmedServices: payload,
     customerSignature: store.state.signature
   })
 
