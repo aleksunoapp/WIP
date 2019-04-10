@@ -20,7 +20,7 @@
         >
         <figcaption>
           <span>
-            {{ $t("your_service_consultant") }}
+            {{ $t("your_service_advisor") }}
           </span>
           <span
             class="consultant__name"

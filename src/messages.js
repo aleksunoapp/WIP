@@ -77,8 +77,8 @@ const enCA = {
   please_enter_your_company_name: 'Please enter your company name',
   // drawer
   information: 'Information',
-  call_service_advisor: 'Call Service Consultant',
-  text_service_advisor: 'Text Service Consultant',
+  call_service_advisor: 'Call Service Advisor',
+  text_service_advisor: 'Text Service Advisor',
   view_inspection_report: 'View Inspection Report',
   // tutorial
   review: 'Review',
@@ -86,12 +86,12 @@ const enCA = {
   pickup: 'Pick Up',
   description1: 'Review the (pre-selected) new recommendations that we have found.',
   description2: 'Approve the recommendations so that we can begin the repairs.',
-  description3: 'Pick up your vehicle when your service consultant contacts you.',
+  description3: 'Pick up your vehicle when your service advisor contacts you.',
   next: 'Next',
   skip: 'Skip',
   // glance
   you_have: 'You have',
-  your_service_consultant: 'Your Service Consultant',
+  your_service_advisor: 'Your Service Advisor',
   that_need_your_attention: 'that needs your attention. | that need your attention.',
   select_your_services_in: 'Select your services in:',
   to_have_your_vehicle_ready_by: 'to have your vehicle ready by:',
@@ -110,7 +110,7 @@ const enCA = {
   recommendation: 'Recommendation',
   back: 'Back',
   not_today: 'Not today',
-  advisor_comments: 'Consultant comments',
+  advisor_comments: 'Advisor comments',
   Warranty: 'Please note this service is covered under Warranty - you will NOT be charged for it',
   Internal: 'Please note this service is free - you will NOT be charged for it',
   ServiceContract: 'Please note the price of this service is covered by the service contract - you will NOT be charged for it',
@@ -142,7 +142,7 @@ const enCA = {
   // thanks
   thank_you: 'Thank you for your time!',
   ready: 'Your vehicle will be ready by',
-  your_service_advisor_will_confirm: 'Your Service Consultant will confirm with you when your vehicle is ready.',
+  your_service_advisor_will_confirm: 'Your Service Advisor will confirm with you when your vehicle is ready.',
   // not_found
   go_back: 'Go Back',
   log_in: 'Log In',
@@ -204,7 +204,7 @@ const frCA = {
   skip: 'Passer',
   // glance
   you_have: 'Vous avez',
-  your_service_consultant: 'Votre conseiller au service',
+  your_service_advisor: 'Votre conseiller au service',
   that_need_your_attention: 'requérant votre attention.',
   select_your_services_in: 'Sélectionnez vos services dans:',
   to_have_your_vehicle_ready_by: 'pour que votre véhicule soit prêt au plus tard à:',
@@ -317,7 +317,7 @@ const esMX = {
   skip: 'Omitir',
   // glance
   you_have: 'Tiene',
-  your_service_consultant: 'Su Asesor de Servicio',
+  your_service_advisor: 'Su Asesor de Servicio',
   that_need_your_attention: 'que requiere su atención.',
   select_your_services_in: 'Seleccione sus servicios en:',
   to_have_your_vehicle_ready_by: 'para tener su vehículo listo el:',
